@@ -1,0 +1,61 @@
+---
+---
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="View work">
+  <button class="lightbox__close" id="lightbox-close" aria-label="Close">&times;</button>
+  <div class="lightbox__content" id="lightbox-content">
+    <div class="lightbox__frame">
+      <img id="lightbox-image" src="" alt="" />
+    </div>
+    <p class="lightbox__caption" id="lightbox-caption"></p>
+  </div>
+</div>
+
+<script>
+  const lightbox = document.getElementById("lightbox")!;
+  const closeBtn = document.getElementById("lightbox-close")!;
+  const image = document.getElementById("lightbox-image") as HTMLImageElement;
+  const caption = document.getElementById("lightbox-caption")!;
+
+  function open(src: string, alt: string, title: string) {
+    image.src = src;
+    image.alt = alt;
+    caption.textContent = title;
+    lightbox.classList.add("is-open");
+    document.body.classList.add("modal-open");
+  }
+
+  function close() {
+    lightbox.classList.remove("is-open");
+    document.body.classList.remove("modal-open");
+  }
+
+  document.querySelectorAll<HTMLElement>("[data-lightbox-trigger]").forEach((item) => {
+    item.addEventListener("click", (e) => {
+      e.preventDefault();
+      open(
+        item.dataset.image || "",
+        item.dataset.alt || "",
+        item.dataset.title || "",
+      );
+    });
+    item.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        open(
+          item.dataset.image || "",
+          item.dataset.alt || "",
+          item.dataset.title || "",
+        );
+      }
+    });
+  });
+
+  closeBtn.addEventListener("click", close);
+  lightbox.addEventListener("click", (e) => {
+    if (e.target === lightbox) close();
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && lightbox.classList.contains("is-open")) close();
+  });
+</script>

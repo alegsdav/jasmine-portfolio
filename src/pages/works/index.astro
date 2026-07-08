@@ -1,0 +1,37 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import WorksHeader from "../../components/WorksHeader.astro";
+import SiteFooter from "../../components/SiteFooter.astro";
+import ContactModal from "../../components/ContactModal.astro";
+import Lightbox from "../../components/Lightbox.astro";
+import ArtworkCard from "../../components/ArtworkCard.astro";
+import { getAllArtworks, isSanityConfigured } from "../../lib/sanity";
+
+const artworks = await getAllArtworks();
+---
+
+<BaseLayout title="Works — Jasmine Wu" description="Selected works — drawings and studies by Jasmine Wu.">
+  <WorksHeader />
+
+  <main class="works-main">
+    <section class="works-section">
+      <h1 class="oeuvre-title">Works</h1>
+
+      {
+        !isSanityConfigured && (
+          <p style="color:#a33; font-size:0.85rem; margin:-2rem 0 2rem;">
+            Showing sample placeholder pieces — connect Sanity to manage real artwork (see README).
+          </p>
+        )
+      }
+
+      <div class="oeuvre-gallery">
+        {artworks.map((artwork) => <ArtworkCard artwork={artwork} />)}
+      </div>
+    </section>
+  </main>
+
+  <SiteFooter />
+  <Lightbox />
+  <ContactModal />
+</BaseLayout>

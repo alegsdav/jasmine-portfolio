@@ -1,0 +1,31 @@
+---
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <span>&copy; {year} Jasmine Wu</span>
+  <button type="button" class="contact-trigger" data-open-contact>Get in touch</button>
+</footer>
+
+<style>
+  .contact-trigger {
+    background: none;
+    border: none;
+    color: inherit;
+    font: inherit;
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-bottom: 1px solid currentColor;
+    padding: 0 0 1px;
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>("[data-open-contact]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      document.dispatchEvent(new CustomEvent("open-contact-modal"));
+    });
+  });
+</script>

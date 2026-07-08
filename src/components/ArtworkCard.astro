@@ -1,0 +1,34 @@
+---
+import type { Artwork } from "../lib/types";
+
+interface Props {
+  artwork: Artwork;
+}
+
+const { artwork } = Astro.props;
+---
+
+<div class:list={["oeuvre-item", `oeuvre-item--${artwork.size}`]}>
+  <button
+    type="button"
+    class="oeuvre-frame"
+    data-lightbox-trigger
+    data-image={artwork.image.url}
+    data-alt={artwork.image.alt}
+    data-title={artwork.title}
+    style="border:none; padding:0; display:block; width:100%;"
+    aria-label={`View ${artwork.title} larger`}
+  >
+    <img src={artwork.image.url} alt={artwork.image.alt} loading="lazy" />
+  </button>
+  <div class="oeuvre-caption">
+    <a href={`/works/${artwork.slug}/`} class="oeuvre-caption__title">{artwork.title}</a>
+    {
+      artwork.status === "sold" ? (
+        <span class="status-badge status-badge--sold">Sold</span>
+      ) : artwork.status === "available" ? (
+        <span class="status-badge status-badge--available">Available</span>
+      ) : null
+    }
+  </div>
+</div>

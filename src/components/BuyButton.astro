@@ -1,0 +1,43 @@
+---
+import type { Artwork } from "../lib/types";
+
+interface Props {
+  artwork: Artwork;
+}
+
+const { artwork } = Astro.props;
+
+const formattedPrice =
+  typeof artwork.price === "number"
+    ? new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: artwork.currency || "USD",
+        maximumFractionDigits: 0,
+      }).format(artwork.price)
+    : null;
+---
+
+{formattedPrice && <p class="artwork__price">{formattedPrice}</p>}
+
+{
+  artwork.status === "sold" ? (
+    <button class="buy-button buy-button--disabled" disabled>
+      Sold
+    </button>
+  ) : artwork.status === "not-for-sale" ? (
+    <button class="buy-button buy-button--disabled" disabled>
+      Not for sale
+    </button>
+  ) : artwork.buyLink ? (
+    <a class="buy-button" href={artwork.buyLink} target="_blank" rel="noopener noreferrer">
+      Buy this piece
+    </a>
+  ) : (
+    <>
+      <button class="buy-button buy-button--disabled" disabled>
+        Purchase coming soon
+      </button>
+      <p class="buy-note">Interested now? Use the contact form to inquire.</p>
+    </>
+  )
+}

@@ -1,0 +1,125 @@
+---
+const formspreeId = import.meta.env.PUBLIC_FORMSPREE_ID;
+const contactEmail = import.meta.env.PUBLIC_CONTACT_EMAIL || "hello@example.com";
+---
+
+<div
+  class="contact-modal"
+  id="contact-modal"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Contact Jasmine"
+>
+  <div class="contact-modal__inner">
+    <button class="contact-modal__close" id="modal-close" aria-label="Close">&times;</button>
+    <p class="contact-modal__label">Contact</p>
+    <h2 class="contact-modal__title">Leave a message.</h2>
+    <p class="contact-modal__status" id="contact-status" role="status"></p>
+    <form
+      class="contact-form"
+      id="contact-form"
+      data-formspree-id={formspreeId}
+      data-contact-email={contactEmail}
+      novalidate
+    >
+      <div class="contact-form__row">
+        <label for="cf-name">Name</label>
+        <input id="cf-name" name="name" type="text" placeholder="Your name" autocomplete="name" required />
+      </div>
+      <div class="contact-form__row">
+        <label for="cf-email">Email</label>
+        <input id="cf-email" name="email" type="email" placeholder="your@email.com" autocomplete="email" required />
+      </div>
+      <div class="contact-form__row">
+        <label for="cf-message">Message</label>
+        <textarea id="cf-message" name="message" rows="5" placeholder="Commissions, prints, hello…" required></textarea>
+      </div>
+      <button class="contact-form__submit" type="submit">Send</button>
+    </form>
+  </div>
+</div>
+
+<script>
+  const modal = document.getElementById("contact-modal")!;
+  const closeBtn = document.getElementById("modal-close")!;
+  const form = document.getElementById("contact-form") as HTMLFormElement;
+  const status = document.getElementById("contact-status")!;
+  const submitBtn = form.querySelector<HTMLButtonElement>(".contact-form__submit")!;
+
+  const formspreeId = form.dataset.formspreeId;
+  const contactEmail = form.dataset.contactEmail || "hello@example.com";
+
+  function openModal() {
+    modal.classList.add("is-open");
+    document.body.classList.add("modal-open");
+    window.setTimeout(() => form.querySelector("input")?.focus(), 50);
+  }
+
+  function closeModal() {
+    modal.classList.remove("is-open");
+    document.body.classList.remove("modal-open");
+  }
+
+  function setStatus(message: string, isError = false) {
+    status.textContent = message;
+    status.classList.toggle("is-visible", Boolean(message));
+    status.classList.toggle("is-error", isError);
+  }
+
+  closeBtn.addEventListener("click", closeModal);
+  document.addEventListener("open-contact-modal", openModal);
+
+  modal.addEventListener("click", (e) => {
+    if (e.target === modal) closeModal();
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && modal.classList.contains("is-open")) closeModal();
+  });
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const data = new FormData(form);
+
+    if (!formspreeId) {
+      // No Formspree endpoint configured yet — fall back to opening the
+      // visitor's email client so messages are never silently lost.
+      const subject = encodeURIComponent(`Message from ${data.get("name") || "website visitor"}`);
+      const body = encodeURIComponent(
+        `${data.get("message")}\n\n— ${data.get("name")} (${data.get("email")})`,
+      );
+      window.location.href = `mailto:${contactEmail}?subject=${subject}&body=${body}`;
+      closeModal();
+      form.reset();
+      return;
+    }
+
+    submitBtn.disabled = true;
+    setStatus("Sending…");
+
+    try {
+      const res = await fetch(`https://formspree.io/f/${formspreeId}`, {
+        method: "POST",
+        headers: { Accept: "application/json" },
+        body: data,
+      });
+
+      if (res.ok) {
+        setStatus("Thanks — your message has been sent.");
+        form.reset();
+        window.setTimeout(() => {
+          closeModal();
+          setStatus("");
+        }, 1800);
+      } else {
+        setStatus("Something went wrong. Please try again.", true);
+      }
+    } catch {
+      setStatus("Something went wrong. Please try again.", true);
+    } finally {
+      submitBtn.disabled = false;
+    }
+  });
+
+  (window as Window & { openContactModal?: () => void }).openContactModal = openModal;
+</script>
