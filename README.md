@@ -125,10 +125,6 @@ Remember to set the same environment variables (`PUBLIC_SANITY_PROJECT_ID`, `PUB
 - **Colors & type** — CSS variables at the top of `src/styles/global.css`.
 - **Adding a page** — add a new `.astro` file under `src/pages/`.
 
-## Older version
-
-The previous vanilla Vite + TypeScript implementation (no CMS, no commerce) is preserved in `_legacy/` for reference. It's not wired into the build and can be deleted once you're comfortable with the new setup.
-
 ---
 
 Made with care.
