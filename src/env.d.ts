@@ -4,7 +4,7 @@
 interface ImportMetaEnv {
   readonly PUBLIC_SANITY_PROJECT_ID?: string;
   readonly PUBLIC_SANITY_DATASET?: string;
-  readonly PUBLIC_FORMSPREE_ID?: string;
+  readonly PUBLIC_WEB3FORMS_KEY?: string;
   readonly PUBLIC_CONTACT_EMAIL?: string;
 }
 

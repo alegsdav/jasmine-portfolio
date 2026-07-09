@@ -45,8 +45,6 @@ body.modal-open {
 a {
   color: inherit;
   text-decoration: none;
-  border-bottom: 1px solid currentColor;
-  padding-bottom: 1px;
   transition: opacity 0.2s ease;
 }
 
@@ -66,14 +64,9 @@ button {
 
 /* ---------- Works page header ---------- */
 .works-header {
-  position: sticky;
-  top: 0;
-  z-index: 20;
   display: flex;
   align-items: center;
-  padding: 1.5rem 2.5rem;
-  background: var(--bg);
-  border-bottom: 1px solid var(--rule);
+  padding: 2rem 2.5rem 1rem;
 }
 
 .brand {
@@ -136,25 +129,18 @@ button {
 .oeuvre-frame {
   position: relative;
   width: 100%;
-  aspect-ratio: 3 / 4;
-  background: #f0ede8;
-  border: 1px solid #dedad4;
-  overflow: hidden;
   transform: scale(1);
-  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
-              box-shadow 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .oeuvre-item:hover .oeuvre-frame,
 .oeuvre-item:focus-visible .oeuvre-frame {
   transform: scale(1.02);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
 }
 
 .oeuvre-frame img {
   width: 100%;
-  height: 100%;
-  object-fit: cover;
+  height: auto;
 }
 
 .oeuvre-caption {
@@ -221,12 +207,9 @@ button {
 .lightbox__frame {
   width: 100%;
   height: 100%;
-  background: #f0ede8;
-  border: 1px solid #dedad4;
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
 }
 
 .lightbox__frame img {
@@ -269,12 +252,6 @@ button {
   grid-template-columns: 1.3fr 1fr;
   gap: 3rem;
   align-items: start;
-}
-
-.artwork__frame {
-  background: #f0ede8;
-  border: 1px solid #dedad4;
-  overflow: hidden;
 }
 
 .artwork__frame img {
@@ -668,8 +645,7 @@ html.is-landing body {
 
 /* ---------- Footer ---------- */
 .site-footer {
-  border-top: 1px solid var(--rule);
-  padding: 2rem 2.5rem;
+  padding: 1rem 2.5rem 2.5rem;
   display: flex;
   justify-content: space-between;
   align-items: center;

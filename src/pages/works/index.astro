@@ -10,12 +10,12 @@ import { getAllArtworks, isSanityConfigured } from "../../lib/sanity";
 const artworks = await getAllArtworks();
 ---
 
-<BaseLayout title="Works — Jasmine Wu" description="Selected works — drawings and studies by Jasmine Wu.">
+<BaseLayout title="Artworks — Jamstain" description="Selected works — drawings and studies by Jasmine Wu.">
   <WorksHeader />
 
   <main class="works-main">
     <section class="works-section">
-      <h1 class="oeuvre-title">Works</h1>
+      <h1 class="oeuvre-title">Artworks</h1>
 
       {
         !isSanityConfigured && (

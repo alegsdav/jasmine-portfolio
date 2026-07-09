@@ -2,14 +2,14 @@
 
 An art portfolio built with **Astro** + **TypeScript**, with artwork content managed in **Sanity Studio** (so the artist/client can add, edit, and price pieces without touching code), and a lightweight path to selling individual pieces via **Stripe Payment Links**.
 
-The site runs and looks complete out of the box with sample placeholder artwork, even before Sanity/Formspree/Stripe are connected — see [Running without any setup](#running-without-any-setup).
+The site runs and looks complete out of the box with sample placeholder artwork, even before Sanity/Web3Forms/Stripe are connected — see [Running without any setup](#running-without-any-setup).
 
 ## Stack
 
 - [Astro](https://astro.build/) — static site generator, TypeScript-first
 - [Sanity](https://www.sanity.io/) — headless CMS for artwork content (Studio lives in `studio/`)
 - [Stripe Payment Links](https://stripe.com/payments/payment-links) — no-backend checkout, one link per artwork
-- [Formspree](https://formspree.io/) — contact form submissions, no backend required
+- [Web3Forms](https://web3forms.com/) — contact form submissions, no backend required
 
 ## Project structure
 
@@ -49,7 +49,7 @@ npm run dev
 
 The site runs at <http://localhost:5173> with sample placeholder artwork (using the existing cat images) so you can see the full layout — gallery grid, lightbox, artwork detail pages, contact modal — before connecting anything. The works page shows a small red notice reminding you it's sample data.
 
-The contact form works immediately too: without a Formspree ID configured, submitting opens the visitor's email client with the message pre-filled, so nothing is ever silently lost.
+The contact form works immediately too: without a Web3Forms key configured, submitting opens the visitor's email client with the message pre-filled, so nothing is ever silently lost.
 
 ## Setting up Sanity (content management)
 
@@ -80,14 +80,14 @@ This lets you (or your client) add/edit artwork — title, image, price, sold st
    This gives you a hosted URL like `https://your-project.sanity.studio` — bookmark that for your client.
 6. Restart `npm run dev` at the project root — the site will now pull real artwork from Sanity instead of the sample data.
 
-## Setting up the contact form (Formspree)
+## Setting up the contact form (Web3Forms)
 
-1. Create a free form at [formspree.io](https://formspree.io/) and copy its form ID (the part after `/f/` in the endpoint URL).
+1. Go to [web3forms.com](https://web3forms.com/) and create a free access key with your email address (no signup required — the key is emailed to you).
 2. In your root `.env`:
    ```
-   PUBLIC_FORMSPREE_ID=your-form-id
+   PUBLIC_WEB3FORMS_KEY=your-access-key
    ```
-3. Submissions will now be emailed to whatever address you configured in Formspree, with a success/error message shown in the modal.
+3. Submissions will now be emailed to whatever address you registered the key with, with a success/error message shown in the modal. Web3Forms' free tier includes 250 submissions/month.
 
 If you skip this step, the form still works — it just falls back to opening the visitor's default email app instead.
 
@@ -117,7 +117,7 @@ The `dist/` output is fully static:
 - **Vercel** — import the repo, it auto-detects Astro. Add your `.env` variables in the project settings.
 - **Netlify** — connect the repo, build command `npm run build`, publish directory `dist`.
 
-Remember to set the same environment variables (`PUBLIC_SANITY_PROJECT_ID`, `PUBLIC_SANITY_DATASET`, `PUBLIC_FORMSPREE_ID`, `PUBLIC_CONTACT_EMAIL`) in your hosting provider's dashboard — `.env` files aren't committed to git.
+Remember to set the same environment variables (`PUBLIC_SANITY_PROJECT_ID`, `PUBLIC_SANITY_DATASET`, `PUBLIC_WEB3FORMS_KEY`, `PUBLIC_CONTACT_EMAIL`) in your hosting provider's dashboard — `.env` files aren't committed to git.
 
 ## Customizing
 

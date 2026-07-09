@@ -1,5 +1,5 @@
 ---
-const formspreeId = import.meta.env.PUBLIC_FORMSPREE_ID;
+const web3formsKey = import.meta.env.PUBLIC_WEB3FORMS_KEY;
 const contactEmail = import.meta.env.PUBLIC_CONTACT_EMAIL || "hello@example.com";
 ---
 
@@ -18,7 +18,7 @@ const contactEmail = import.meta.env.PUBLIC_CONTACT_EMAIL || "hello@example.com"
     <form
       class="contact-form"
       id="contact-form"
-      data-formspree-id={formspreeId}
+      data-web3forms-key={web3formsKey}
       data-contact-email={contactEmail}
       novalidate
     >
@@ -46,7 +46,7 @@ const contactEmail = import.meta.env.PUBLIC_CONTACT_EMAIL || "hello@example.com"
   const status = document.getElementById("contact-status")!;
   const submitBtn = form.querySelector<HTMLButtonElement>(".contact-form__submit")!;
 
-  const formspreeId = form.dataset.formspreeId;
+  const web3formsKey = form.dataset.web3formsKey;
   const contactEmail = form.dataset.contactEmail || "hello@example.com";
 
   function openModal() {
@@ -81,8 +81,8 @@ const contactEmail = import.meta.env.PUBLIC_CONTACT_EMAIL || "hello@example.com"
     e.preventDefault();
     const data = new FormData(form);
 
-    if (!formspreeId) {
-      // No Formspree endpoint configured yet — fall back to opening the
+    if (!web3formsKey) {
+      // No Web3Forms key configured yet — fall back to opening the
       // visitor's email client so messages are never silently lost.
       const subject = encodeURIComponent(`Message from ${data.get("name") || "website visitor"}`);
       const body = encodeURIComponent(
@@ -97,14 +97,18 @@ const contactEmail = import.meta.env.PUBLIC_CONTACT_EMAIL || "hello@example.com"
     submitBtn.disabled = true;
     setStatus("Sending…");
 
+    data.append("access_key", web3formsKey);
+    data.append("subject", `New message from ${data.get("name") || "website visitor"}`);
+
     try {
-      const res = await fetch(`https://formspree.io/f/${formspreeId}`, {
+      const res = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
         headers: { Accept: "application/json" },
         body: data,
       });
+      const result = await res.json();
 
-      if (res.ok) {
+      if (res.ok && result.success) {
         setStatus("Thanks — your message has been sent.");
         form.reset();
         window.setTimeout(() => {
