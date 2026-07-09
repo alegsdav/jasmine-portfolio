@@ -77,11 +77,16 @@ button {
 }
 
 .brand {
-  font-family: var(--serif);
-  font-size: 1.4rem;
-  letter-spacing: 0.02em;
+  display: inline-flex;
+  align-items: center;
   border: none;
   padding: 0;
+}
+
+.brand__logo {
+  display: block;
+  height: 28px;
+  width: auto;
 }
 
 .works-main {
@@ -409,7 +414,7 @@ html.is-landing body {
 }
 
 .hero__title-img {
-  --hero-title-width: 1200px;
+  --hero-title-width: 500px;
   --hero-title-offset-y: -50px;
 
   position: relative;
