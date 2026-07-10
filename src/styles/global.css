@@ -345,16 +345,6 @@ html.is-landing body {
   justify-content: center;
 }
 
-@keyframes cat-tilt-left {
-  from { transform: rotate(0deg)  scale(1); }
-  to   { transform: rotate(3deg)  scale(1.05); }
-}
-
-@keyframes cat-tilt-right {
-  from { transform: rotate(0deg)  scale(1); }
-  to   { transform: rotate(-3deg) scale(1.05); }
-}
-
 .hero__cat {
   position: absolute;
   z-index: 1;
@@ -366,12 +356,8 @@ html.is-landing body {
   transform-origin: bottom center;
 }
 
-.hero__cat--left:hover {
-  animation: cat-tilt-left 0.5s ease forwards;
-}
-
-.hero__cat--right:hover {
-  animation: cat-tilt-right 0.5s ease forwards;
+.hero__cat:hover {
+  transform: scale(1.04);
 }
 
 .hero__cat--left {
@@ -431,43 +417,7 @@ html.is-landing body {
   font-style: normal;
   font-size: 36px;
   fill: var(--ink);
-  opacity: 0;
   letter-spacing: 0.04em;
-  transform-box: fill-box;
-  transform-origin: center;
-}
-
-.cs-path.cs-animate {
-  animation: cs-draw 0.75s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-}
-
-@keyframes cs-draw {
-  from { stroke-dashoffset: var(--cs-len); }
-  to   { stroke-dashoffset: 0; }
-}
-
-.cs-arrow {
-  opacity: 0;
-}
-
-.cs-arrow.cs-animate {
-  animation: cs-fade-in 0.2s ease forwards 0.65s;
-}
-
-.cs-label.cs-animate {
-  animation:
-    cs-fade-in 0.3s ease forwards 0.72s,
-    cs-label-pulse 1.8s ease-in-out infinite 1.05s;
-}
-
-@keyframes cs-fade-in {
-  from { opacity: 0; }
-  to   { opacity: 1; }
-}
-
-@keyframes cs-label-pulse {
-  0%, 100% { transform: scale(1); }
-  50%       { transform: scale(1.1); }
 }
 
 /* ---------- Shared section typography ---------- */

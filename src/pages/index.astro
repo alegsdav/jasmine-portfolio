@@ -19,7 +19,7 @@ import ContactModal from "../components/ContactModal.astro";
       <div class="cat-scribble cat-scribble--left" aria-hidden="true">
         <svg width="200" height="70" viewBox="0 0 200 70" fill="none" overflow="visible">
           <path class="cs-path" d=""></path>
-          <text class="cs-label" x="210" y="12" text-anchor="start">view works</text>
+          <text class="cs-label" x="182" y="12" text-anchor="start">view works</text>
         </svg>
       </div>
 
@@ -28,7 +28,7 @@ import ContactModal from "../components/ContactModal.astro";
       <div class="cat-scribble cat-scribble--right" aria-hidden="true">
         <svg width="200" height="160" viewBox="0 0 200 160" fill="none" overflow="visible">
           <path class="cs-path" d=""></path>
-          <text class="cs-label" x="116" y="2" text-anchor="end">contact me</text>
+          <text class="cs-label" x="182" y="2" text-anchor="end">contact me</text>
         </svg>
       </div>
 
@@ -69,24 +69,24 @@ import ContactModal from "../components/ContactModal.astro";
   function leftScribblePath(): string {
     return catmullRomPath([
       [-20, 30],
-      [rnd(50, 8), rnd(40, 8)],
-      [rnd(100, 8), rnd(26, 8)],
-      [rnd(148, 5), rnd(14, 4)],
-      [rnd(168, 4), rnd(2, 3)],
-      [rnd(158, 4), rnd(22, 4)],
-      [rnd(182, 5), rnd(12, 4)],
-      [196, 8],
+      [rnd(22, 8), rnd(40, 8)],
+      [rnd(72, 8), rnd(26, 8)],
+      [rnd(120, 5), rnd(14, 4)],
+      [rnd(140, 4), rnd(2, 3)],
+      [rnd(130, 4), rnd(22, 4)],
+      [rnd(154, 5), rnd(12, 4)],
+      [168, 8],
     ]);
   }
 
   function rightScribblePath(): string {
     return catmullRomPath([
       [192, 150],
-      [rnd(192, 5), rnd(108, 5)],
-      [rnd(202, 5), rnd(72, 5)],
-      [rnd(192, 5), rnd(40, 5)],
-      [rnd(160, 5), rnd(22, 4)],
-      [130, 10],
+      [rnd(210, 5), rnd(108, 5)],
+      [rnd(222, 5), rnd(72, 5)],
+      [rnd(224, 5), rnd(40, 5)],
+      [rnd(210, 5), rnd(22, 4)],
+      [196, 10],
     ]);
   }
 
@@ -115,44 +115,34 @@ import ContactModal from "../components/ContactModal.astro";
       }
     }
 
-    function activateScribble(scrib: HTMLElement) {
+    function renderScribble(scrib: HTMLElement) {
       const path = scrib.querySelector<SVGGeometryElement>(".cs-path")!;
-      const label = scrib.querySelector<Element>(".cs-label")!;
-
       const isLeft = scrib.classList.contains("cat-scribble--left");
       path.setAttribute("d", isLeft ? leftScribblePath() : rightScribblePath());
-
-      const len = path.getTotalLength();
-      path.style.setProperty("--cs-len", String(len));
-      path.style.strokeDasharray = String(len);
-
-      [path, label].forEach((el) => el.classList.remove("cs-animate"));
-      path.getBoundingClientRect();
-
       scrib.classList.add("is-active");
-      path.classList.add("cs-animate");
-      label.classList.add("cs-animate");
     }
 
-    function deactivateScribble(scrib: HTMLElement) {
-      scrib.classList.remove("is-active");
-      scrib.querySelectorAll(".cs-path, .cs-label").forEach((el) => el.classList.remove("cs-animate"));
+    function positionAll() {
+      positionScribble(catL!, scribL!, "left");
+      positionScribble(catR!, scribR!, "right");
     }
 
-    catL.addEventListener("mouseenter", () => {
-      positionScribble(catL, scribL, "left");
-      activateScribble(scribL);
+    positionAll();
+    renderScribble(scribL);
+    renderScribble(scribR);
+
+    window.addEventListener("resize", positionAll);
+
+    [catL, catR].forEach((img) => {
+      if (!(img as HTMLImageElement).complete) {
+        img.addEventListener("load", positionAll);
+      }
     });
-    catL.addEventListener("mouseleave", () => deactivateScribble(scribL));
+
     catL.addEventListener("click", () => {
       window.location.href = "/works/";
     });
 
-    catR.addEventListener("mouseenter", () => {
-      positionScribble(catR, scribR, "right");
-      activateScribble(scribR);
-    });
-    catR.addEventListener("mouseleave", () => deactivateScribble(scribR));
     catR.addEventListener("click", () => {
       document.dispatchEvent(new CustomEvent("open-contact-modal"));
     });
