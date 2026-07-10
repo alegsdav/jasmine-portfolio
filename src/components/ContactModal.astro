@@ -1,6 +1,5 @@
 ---
 const web3formsKey = import.meta.env.PUBLIC_WEB3FORMS_KEY;
-const contactEmail = import.meta.env.PUBLIC_CONTACT_EMAIL || "hello@example.com";
 ---
 
 <div
@@ -19,7 +18,6 @@ const contactEmail = import.meta.env.PUBLIC_CONTACT_EMAIL || "hello@example.com"
       class="contact-form"
       id="contact-form"
       data-web3forms-key={web3formsKey}
-      data-contact-email={contactEmail}
       novalidate
     >
       <div class="contact-form__row">
@@ -34,10 +32,13 @@ const contactEmail = import.meta.env.PUBLIC_CONTACT_EMAIL || "hello@example.com"
         <label for="cf-message">Message</label>
         <textarea id="cf-message" name="message" rows="5" placeholder="Commissions, prints, hello…" required></textarea>
       </div>
+      <div class="h-captcha" data-captcha="true"></div>
       <button class="contact-form__submit" type="submit">Send</button>
     </form>
   </div>
 </div>
+
+<script src="https://web3forms.com/client/script.js" async defer></script>
 
 <script>
   const modal = document.getElementById("contact-modal")!;
@@ -47,7 +48,6 @@ const contactEmail = import.meta.env.PUBLIC_CONTACT_EMAIL || "hello@example.com"
   const submitBtn = form.querySelector<HTMLButtonElement>(".contact-form__submit")!;
 
   const web3formsKey = form.dataset.web3formsKey;
-  const contactEmail = form.dataset.contactEmail || "hello@example.com";
 
   function openModal() {
     modal.classList.add("is-open");
@@ -82,15 +82,14 @@ const contactEmail = import.meta.env.PUBLIC_CONTACT_EMAIL || "hello@example.com"
     const data = new FormData(form);
 
     if (!web3formsKey) {
-      // No Web3Forms key configured yet — fall back to opening the
-      // visitor's email client so messages are never silently lost.
-      const subject = encodeURIComponent(`Message from ${data.get("name") || "website visitor"}`);
-      const body = encodeURIComponent(
-        `${data.get("message")}\n\n— ${data.get("name")} (${data.get("email")})`,
-      );
-      window.location.href = `mailto:${contactEmail}?subject=${subject}&body=${body}`;
-      closeModal();
-      form.reset();
+      console.warn("[ContactModal] PUBLIC_WEB3FORMS_KEY is not set — cannot send message.");
+      setStatus("We're having issues sending messages right now. Please try again later.", true);
+      return;
+    }
+
+    const captchaResponse = form.querySelector<HTMLTextAreaElement>("textarea[name='h-captcha-response']")?.value;
+    if (!captchaResponse) {
+      setStatus("Please complete the captcha before sending.", true);
       return;
     }
 
@@ -111,15 +110,16 @@ const contactEmail = import.meta.env.PUBLIC_CONTACT_EMAIL || "hello@example.com"
       if (res.ok && result.success) {
         setStatus("Thanks — your message has been sent.");
         form.reset();
+        (window as Window & { hcaptcha?: { reset: () => void } }).hcaptcha?.reset();
         window.setTimeout(() => {
           closeModal();
           setStatus("");
         }, 1800);
       } else {
-        setStatus("Something went wrong. Please try again.", true);
+        setStatus("We're having issues sending messages right now. Please try again later.", true);
       }
     } catch {
-      setStatus("Something went wrong. Please try again.", true);
+      setStatus("We're having issues sending messages right now. Please try again later.", true);
     } finally {
       submitBtn.disabled = false;
     }
