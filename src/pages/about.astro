@@ -1,0 +1,144 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import WorksHeader from "../components/WorksHeader.astro";
+import SiteFooter from "../components/SiteFooter.astro";
+import ContactModal from "../components/ContactModal.astro";
+
+const socials = [
+  {
+    label: "Instagram",
+    href: "https://instagram.com/jamstain",
+    path: "M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163C8.741 0 8.333.015 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z",
+  },
+  {
+    label: "Linktree",
+    href: "https://linktr.ee/jamstain",
+    path: "M13.736 5.853l4.005-4.117 2.325 2.381-4.2 4.005h5.908v3.305h-5.937l4.229 4.108-2.325 2.334-5.741-5.769-5.741 5.769-2.325-2.325 4.229-4.108H2.226V8.122h5.908l-4.2-4.005 2.325-2.381 4.005 4.117V0h3.472zM10.264 18.744h3.472V24h-3.472z",
+  },
+];
+---
+
+<BaseLayout title="About — Jamstain" description="About Jamstain — artist and illustrator.">
+  <WorksHeader />
+
+  <main class="about-main">
+    <section class="about">
+      <div class="about__image" aria-label="Portrait placeholder"></div>
+
+      <div class="about__content">
+        
+        <h1 class="about__title">About Me</h1>
+        
+
+        <div class="about__body">
+          <p>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
+            ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+            aliquip ex ea commodo consequat.
+          </p>
+          <p>
+            Duis aute irure dolor in reprehenderit in voluptate velit esse
+            cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
+            cupidatat non proident, sunt in culpa qui officia deserunt mollit
+            anim id est laborum.
+          </p>
+        </div>
+
+        <ul class="about__socials">
+          {
+            socials.map((social) => (
+              <li>
+                <a href={social.href} aria-label={social.label} target="_blank" rel="noopener noreferrer">
+                  <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true">
+                    <path d={social.path} />
+                  </svg>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <SiteFooter />
+  <ContactModal />
+</BaseLayout>
+
+<style>
+  .about-main {
+    min-height: calc(100dvh - 5rem);
+  }
+
+  .about {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 4rem;
+    align-items: center;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 3rem 2.5rem 6rem;
+  }
+
+  .about__image {
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    background: var(--rule);
+    border: 1px solid #e0e0e0;
+  }
+
+  .about__title {
+    font-family: "ReenieBeanie", cursive;
+    font-style: normal;
+    font-weight: 400;
+    font-size: clamp(3.5rem, 8vw, 6rem);
+    line-height: 1;
+    margin: 0 0 1rem;
+    letter-spacing: 0.02em;
+  }
+
+  .about__subtitle {
+    font-size: 0.8rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 1.75rem;
+  }
+
+  .about__body {
+    color: var(--ink-soft);
+    max-width: 52ch;
+  }
+
+  .about__body p {
+    margin: 0 0 1.25rem;
+  }
+
+  .about__socials {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1.5rem;
+    list-style: none;
+    margin: 2.5rem 0 0;
+    padding: 0;
+  }
+
+  .about__socials a {
+    display: inline-flex;
+    color: var(--ink);
+  }
+
+  @media (max-width: 860px) {
+    .about {
+      grid-template-columns: 1fr;
+      gap: 2.5rem;
+      padding: 2rem 1.25rem 5rem;
+    }
+
+    .about__image {
+      max-width: 360px;
+    }
+  }
+</style>

@@ -8,7 +8,7 @@ const dataset = process.env.SANITY_STUDIO_DATASET || "production";
 
 export default defineConfig({
   name: "jasmine-portfolio-studio",
-  title: "Jasmine Wu — Portfolio Content",
+  title: "Jamstain — Portfolio Content",
 
   projectId,
   dataset,

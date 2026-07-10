@@ -1,4 +1,4 @@
-# Jasmine Wu — Art Portfolio
+# Jamstain — Art Portfolio
 
 An art portfolio built with **Astro** + **TypeScript**, with artwork content managed in **Sanity Studio** (so the artist/client can add, edit, and price pieces without touching code), and a lightweight path to selling individual pieces via **Stripe Payment Links**.
 

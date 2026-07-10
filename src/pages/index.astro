@@ -5,7 +5,7 @@ import ContactModal from "../components/ContactModal.astro";
 
 <BaseLayout
   title="Jamstain"
-  description="Jasmine Wu — an art portfolio of drawings, paintings, and studies."
+  description="Jamstain — an art portfolio of drawings, paintings, and studies."
   isLanding
 >
   <main>
@@ -23,7 +23,10 @@ import ContactModal from "../components/ContactModal.astro";
         </svg>
       </div>
 
-      <img class="hero__title-img" src="/jamstain.png" alt="Jamstain" />
+      <a class="hero__logo-link" href="/about/" aria-label="About Jamstain">
+        <span class="hero__eyebrow" aria-hidden="true">about &darr;</span>
+        <img class="hero__title-img" src="/jamstain.png" alt="Jamstain" />
+      </a>
 
       <div class="cat-scribble cat-scribble--right" aria-hidden="true">
         <svg width="200" height="160" viewBox="0 0 200 160" fill="none" overflow="visible">

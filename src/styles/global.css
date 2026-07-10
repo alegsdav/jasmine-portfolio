@@ -36,6 +36,25 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   line-height: 1.6;
+  cursor: url("/paw.svg") 6 6, auto;
+}
+
+/* Revert to a standard pointer on interactive elements */
+a,
+button,
+select,
+label,
+summary,
+[role="button"],
+[tabindex]:not([tabindex="-1"]),
+.oeuvre-item,
+.hero__cat {
+  cursor: pointer;
+}
+
+input,
+textarea {
+  cursor: text;
 }
 
 body.modal-open {
@@ -94,14 +113,14 @@ button {
 
 /* ---------- Oeuvre / gallery grid ---------- */
 .oeuvre-title {
-  font-family: var(--serif);
-  font-style: italic;
-  font-weight: 300;
-  font-size: clamp(2.5rem, 6vw, 5rem);
+  font-family: "ReenieBeanie", cursive;
+  font-style: normal;
+  font-weight: 400;
+  font-size: clamp(3.5rem, 8vw, 6.5rem);
   line-height: 1;
   margin: 0 0 3rem;
   color: var(--ink);
-  letter-spacing: -0.01em;
+  letter-spacing: 0.02em;
 }
 
 .oeuvre-gallery {
@@ -376,18 +395,56 @@ html.is-landing body {
   object-position: left bottom;
 }
 
-.hero__title-img {
-  --hero-title-width: 500px;
+.hero__logo-link {
   --hero-title-offset-y: -50px;
 
   position: relative;
   z-index: 5;
+  display: block;
+  transform: translateY(var(--hero-title-offset-y));
+  cursor: pointer;
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+  transform-origin: center;
+}
+
+.hero__logo-link:hover {
+  transform: translateY(var(--hero-title-offset-y)) scale(1.06);
+  opacity: 1;
+}
+
+.hero__eyebrow {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%) rotate(-3deg);
+  font-family: "ReenieBeanie", cursive;
+  font-size: 2rem;
+  line-height: 1;
+  color: var(--ink);
+  white-space: nowrap;
+  pointer-events: none;
+  animation: eyebrow-bob 2.4s ease-in-out infinite;
+}
+
+@keyframes eyebrow-bob {
+  0%,
+  100% {
+    transform: translateX(-50%) translateY(0) rotate(-3deg);
+  }
+  50% {
+    transform: translateX(-50%) translateY(-0.4rem) rotate(-3deg);
+  }
+}
+
+.hero__title-img {
+  --hero-title-width: 500px;
+
+  display: block;
   width: var(--hero-title-width);
   max-width: none;
   height: auto;
-  transform: translateY(var(--hero-title-offset-y));
-  pointer-events: none;
   user-select: none;
+  -webkit-user-drag: none;
 }
 
 /* ---------- Cat Scribbles ---------- */
@@ -593,18 +650,6 @@ html.is-landing body {
   cursor: not-allowed;
 }
 
-/* ---------- Footer ---------- */
-.site-footer {
-  padding: 1rem 2.5rem 2.5rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 0.75rem;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: var(--ink-soft);
-}
-
 /* ---------- Responsive ---------- */
 @media (max-width: 860px) {
   .oeuvre-item--half { grid-column: span 12; }
@@ -642,12 +687,6 @@ html.is-landing body {
 
   .contact-modal__inner {
     padding: 2.25rem 1.75rem 2rem;
-  }
-
-  .site-footer {
-    flex-direction: column;
-    gap: 0.5rem;
-    text-align: center;
   }
 
   .lightbox__content {
