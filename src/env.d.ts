@@ -6,6 +6,9 @@ interface ImportMetaEnv {
   readonly PUBLIC_SANITY_DATASET?: string;
   readonly PUBLIC_WEB3FORMS_KEY?: string;
   readonly PUBLIC_CONTACT_EMAIL?: string;
+  readonly PUBLIC_SENTRY_DSN?: string;
+  readonly PUBLIC_UMAMI_SRC?: string;
+  readonly PUBLIC_UMAMI_WEBSITE_ID?: string;
 }
 
 interface ImportMeta {

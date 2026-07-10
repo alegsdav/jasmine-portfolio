@@ -1,11 +1,26 @@
 ---
 import type { Artwork } from "../lib/types";
+import { urlForImage, srcSetForImage } from "../lib/sanity";
 
 interface Props {
   artwork: Artwork;
 }
 
 const { artwork } = Astro.props;
+
+// Thumbnail sizes actually needed in the gallery grid — never ship the
+// full-resolution master file just to render a small card.
+const THUMB_WIDTHS = [400, 640, 960, 1280, 1600];
+const SIZES_BY_LAYOUT: Record<Artwork["size"], string> = {
+  wide: "(max-width: 720px) 100vw, 1020px",
+  half: "(max-width: 860px) 100vw, 500px",
+  third: "(max-width: 720px) 100vw, (max-width: 860px) 50vw, 320px",
+};
+
+const thumbSrc = urlForImage(artwork.image.url, 960);
+const thumbSrcSet = srcSetForImage(artwork.image.url, THUMB_WIDTHS) || undefined;
+// A larger, still-optimized (not raw-original) version for the lightbox.
+const fullSrc = urlForImage(artwork.image.url, 2000, 85);
 ---
 
 <div class:list={["oeuvre-item", `oeuvre-item--${artwork.size}`]}>
@@ -13,22 +28,23 @@ const { artwork } = Astro.props;
     type="button"
     class="oeuvre-frame"
     data-lightbox-trigger
-    data-image={artwork.image.url}
+    data-image={fullSrc}
     data-alt={artwork.image.alt}
     data-title={artwork.title}
-    style="border:none; padding:0; display:block; width:100%;"
     aria-label={`View ${artwork.title} larger`}
   >
-    <img src={artwork.image.url} alt={artwork.image.alt} loading="lazy" />
+    <img
+      src={thumbSrc}
+      srcset={thumbSrcSet}
+      sizes={SIZES_BY_LAYOUT[artwork.size]}
+      width={artwork.image.width}
+      height={artwork.image.height}
+      alt={artwork.image.alt}
+      loading="lazy"
+      decoding="async"
+    />
   </button>
   <div class="oeuvre-caption">
     <a href={`/works/${artwork.slug}/`} class="oeuvre-caption__title">{artwork.title}</a>
-    {
-      artwork.status === "sold" ? (
-        <span class="status-badge status-badge--sold">Sold</span>
-      ) : artwork.status === "available" ? (
-        <span class="status-badge status-badge--available">Available</span>
-      ) : null
-    }
   </div>
 </div>

@@ -22,7 +22,7 @@ export const MOCK_ARTWORKS: Artwork[] = [
     buyLink: "",
     featured: true,
     size: "wide",
-    image: { url: "/cats.png", alt: "Placeholder artwork", width: 1600, height: 1200 },
+    image: { url: "/cats.webp", alt: "Placeholder artwork", width: 1024, height: 622 },
     order: 1,
   },
   {
@@ -38,7 +38,7 @@ export const MOCK_ARTWORKS: Artwork[] = [
     status: "available",
     buyLink: "",
     size: "half",
-    image: { url: "/cat-left.png", alt: "Placeholder artwork", width: 1200, height: 1600 },
+    image: { url: "/cat-left.webp", alt: "Placeholder artwork", width: 736, height: 812 },
     order: 2,
   },
   {
@@ -53,7 +53,7 @@ export const MOCK_ARTWORKS: Artwork[] = [
     currency: "USD",
     status: "sold",
     size: "half",
-    image: { url: "/cat-right.png", alt: "Placeholder artwork", width: 1200, height: 1600 },
+    image: { url: "/cat-right.webp", alt: "Placeholder artwork", width: 876, height: 580 },
     order: 3,
   },
   {
@@ -66,7 +66,7 @@ export const MOCK_ARTWORKS: Artwork[] = [
     description: "Sample placeholder — replace with real work in Sanity Studio.",
     status: "not-for-sale",
     size: "third",
-    image: { url: "/cats.png", alt: "Placeholder artwork", width: 1200, height: 1600 },
+    image: { url: "/cats.webp", alt: "Placeholder artwork", width: 1024, height: 622 },
     order: 4,
   },
   {
@@ -82,7 +82,7 @@ export const MOCK_ARTWORKS: Artwork[] = [
     status: "available",
     buyLink: "",
     size: "third",
-    image: { url: "/cat-left.png", alt: "Placeholder artwork", width: 1200, height: 1600 },
+    image: { url: "/cat-left.webp", alt: "Placeholder artwork", width: 736, height: 812 },
     order: 5,
   },
   {
@@ -98,7 +98,7 @@ export const MOCK_ARTWORKS: Artwork[] = [
     status: "available",
     buyLink: "",
     size: "third",
-    image: { url: "/cat-right.png", alt: "Placeholder artwork", width: 1200, height: 1600 },
+    image: { url: "/cat-right.webp", alt: "Placeholder artwork", width: 876, height: 580 },
     order: 6,
   },
 ];

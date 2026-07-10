@@ -5,7 +5,7 @@
   <button class="lightbox__close" id="lightbox-close" aria-label="Close">&times;</button>
   <div class="lightbox__content" id="lightbox-content">
     <div class="lightbox__frame">
-      <img id="lightbox-image" src="" alt="" />
+      <img id="lightbox-image" src="" alt="" decoding="async" />
     </div>
     <p class="lightbox__caption" id="lightbox-caption"></p>
   </div>
@@ -18,12 +18,16 @@
   const caption = document.getElementById("lightbox-caption")!;
 
   function open(src: string, alt: string, title: string) {
+    image.classList.remove("is-loaded");
     image.src = src;
     image.alt = alt;
     caption.textContent = title;
     lightbox.classList.add("is-open");
     document.body.classList.add("modal-open");
+    if (image.complete) image.classList.add("is-loaded");
   }
+
+  image.addEventListener("load", () => image.classList.add("is-loaded"));
 
   function close() {
     lightbox.classList.remove("is-open");

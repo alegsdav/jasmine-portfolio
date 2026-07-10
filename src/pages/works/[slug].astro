@@ -4,7 +4,7 @@ import WorksHeader from "../../components/WorksHeader.astro";
 import SiteFooter from "../../components/SiteFooter.astro";
 import ContactModal from "../../components/ContactModal.astro";
 import BuyButton from "../../components/BuyButton.astro";
-import { getAllArtworks } from "../../lib/sanity";
+import { getAllArtworks, urlForImage, srcSetForImage } from "../../lib/sanity";
 import type { Artwork } from "../../lib/types";
 
 export async function getStaticPaths() {
@@ -20,21 +20,37 @@ interface Props {
 }
 
 const { artwork } = Astro.props;
+
+const DETAIL_WIDTHS = [640, 960, 1280, 1600, 2000];
+const detailSrc = urlForImage(artwork.image.url, 1280);
+const detailSrcSet = srcSetForImage(artwork.image.url, DETAIL_WIDTHS, 85) || undefined;
+const socialImage = urlForImage(artwork.image.url, 1200, 80);
 ---
 
 <BaseLayout
   title={`${artwork.title} — Jamstain`}
   description={artwork.description || `${artwork.title} by Jamstain.`}
+  image={socialImage}
 >
   <WorksHeader />
 
   <main class="works-main">
     <section class="works-section">
-      <a href="/works/" class="artwork__back">&larr; Back to works</a>
+      <a href="/works/" class="artwork__back">Back to artworks</a>
 
       <div class="artwork">
         <div class="artwork__frame">
-          <img src={artwork.image.url} alt={artwork.image.alt} />
+          <img
+            src={detailSrc}
+            srcset={detailSrcSet}
+            sizes="(max-width: 860px) 100vw, 60vw"
+            width={artwork.image.width}
+            height={artwork.image.height}
+            alt={artwork.image.alt}
+            loading="eager"
+            fetchpriority="high"
+            decoding="async"
+          />
         </div>
 
         <div>

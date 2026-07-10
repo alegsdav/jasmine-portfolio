@@ -24,9 +24,29 @@ if (isSanityConfigured) {
 
 const builder = client ? createImageUrlBuilder(client) : null;
 
-export function urlForImage(source: unknown, width = 1600) {
-  if (!builder) return "";
-  return builder.image(source as any).width(width).auto("format").url();
+/**
+ * Builds an optimized Sanity CDN URL for the given image source (accepts a
+ * plain asset URL, which is what our GROQ projections return).
+ *
+ * Always requests modern formats (`auto=format` lets Sanity serve AVIF/WebP
+ * to browsers that support it) and a sane compression quality, so we never
+ * ship the original, unoptimized master file to the browser.
+ */
+export function urlForImage(source: unknown, width: number, quality = 75) {
+  if (!builder || !source) return typeof source === "string" ? source : "";
+  return builder
+    .image(source as any)
+    .width(Math.round(width))
+    .quality(quality)
+    .auto("format")
+    .fit("max")
+    .url();
+}
+
+/** A comma-separated `srcset` of the same image at several widths. */
+export function srcSetForImage(source: unknown, widths: number[], quality = 75) {
+  if (!builder || !source) return "";
+  return widths.map((w) => `${urlForImage(source, w, quality)} ${w}w`).join(", ");
 }
 
 const ARTWORK_PROJECTION = `{

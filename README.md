@@ -114,10 +114,25 @@ npm run preview # preview the production build locally
 
 The `dist/` output is fully static:
 
-- **Vercel** — import the repo, it auto-detects Astro. Add your `.env` variables in the project settings.
-- **Netlify** — connect the repo, build command `npm run build`, publish directory `dist`.
+- **Vercel** — import the repo, it auto-detects Astro. Add your `.env` variables in the project settings. Security headers (CSP, HSTS, etc.) are already configured in `vercel.json`.
+- **Netlify** — connect the repo, build command `npm run build`, publish directory `dist`. You'll need to port the headers from `vercel.json` into a `netlify.toml` `[[headers]]` block instead — they don't read each other's config format.
 
-Remember to set the same environment variables (`PUBLIC_SANITY_PROJECT_ID`, `PUBLIC_SANITY_DATASET`, `PUBLIC_WEB3FORMS_KEY`, `PUBLIC_CONTACT_EMAIL`) in your hosting provider's dashboard — `.env` files aren't committed to git.
+Remember to set the same environment variables (`PUBLIC_SANITY_PROJECT_ID`, `PUBLIC_SANITY_DATASET`, `PUBLIC_WEB3FORMS_KEY`, `PUBLIC_CONTACT_EMAIL`, and any of the optional ones below) in your hosting provider's dashboard — `.env` files aren't committed to git.
+
+## Pre-launch checklist
+
+Things worth doing once, before pointing a real domain at this and turning on Stripe:
+
+- [ ] **Security headers** — already set up in `vercel.json` (CSP, HSTS, `X-Frame-Options`, `Referrer-Policy`, `Permissions-Policy`). If you add a new third-party script/embed later (e.g. an analytics tool, a Stripe embed instead of Payment Links), you'll need to add its domain to the relevant CSP directive or it'll get silently blocked.
+- [ ] **Lock down your Web3Forms key** — in the Web3Forms dashboard, restrict the access key to your production domain. It's shipped to the browser (`PUBLIC_WEB3FORMS_KEY`), so anyone could otherwise lift it and use it to send spam through your quota.
+- [ ] **Sanity CORS** — in [sanity.io/manage](https://sanity.io/manage) → your project → API → CORS Origins, make sure only your real domain (and `http://localhost:*` for dev) are allowed — not a wildcard.
+- [ ] **Error tracking (Sentry)** — create a free project at [sentry.io](https://sentry.io), then set `PUBLIC_SENTRY_DSN` in your env vars. Leave it unset and no Sentry code ships at all.
+- [ ] **Analytics (Umami)** — point `PUBLIC_UMAMI_SRC` at your self-hosted instance's `script.js` and set `PUBLIC_UMAMI_WEBSITE_ID`. Once you have a domain, also add it to `script-src`/`connect-src` in `vercel.json`'s CSP, or the script will be blocked.
+- [ ] **Sitemap & robots.txt** — already generated automatically at build (`@astrojs/sitemap`) and served from `public/robots.txt`. If you ever change the domain, update it in `astro.config.mjs` (`site`) and `public/robots.txt`.
+- [ ] **Uptime monitoring** — something like [UptimeRobot](https://uptimerobot.com/) or [Better Uptime](https://betterstack.com/better-uptime) (free tiers) pinging the live site and emailing you if it goes down.
+- [ ] **2FA everywhere** — GitHub, Vercel/Netlify, Sanity, Web3Forms, and (once connected) Stripe. This is the single highest-leverage security step for a solo dev.
+- [ ] **Dependency updates** — turn on Dependabot (GitHub → Settings → Security) so dependency CVEs get flagged automatically, especially important once real payments are involved.
+- [ ] **Stripe webhooks (only if you move beyond Payment Links)** — Payment Links need no backend and work as-is. If you later switch to Stripe Checkout Sessions with webhooks, that requires a server endpoint — this site is currently a fully static build (`output: "static"`, no adapter), so that'd mean adding a Vercel/Netlify serverless function or an Astro SSR adapter first.
 
 ## Customizing
 

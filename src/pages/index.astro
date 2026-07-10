@@ -12,8 +12,12 @@ import ContactModal from "../components/ContactModal.astro";
     <section class="hero" aria-label="Featured work">
       <img
         class="hero__cat hero__cat--left"
-        src="/cat-left.png"
+        src="/cat-left.webp"
+        width="736"
+        height="812"
         alt="Graphite study of a cat, left"
+        fetchpriority="high"
+        decoding="async"
       />
 
       <div class="cat-scribble cat-scribble--left" aria-hidden="true">
@@ -37,8 +41,12 @@ import ContactModal from "../components/ContactModal.astro";
 
       <img
         class="hero__cat hero__cat--right"
-        src="/cat-right.png"
+        src="/cat-right.webp"
+        width="876"
+        height="580"
         alt="Graphite study of a cat, right"
+        fetchpriority="high"
+        decoding="async"
       />
     </section>
   </main>

@@ -1,0 +1,63 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import WorksHeader from "../components/WorksHeader.astro";
+import SiteFooter from "../components/SiteFooter.astro";
+import ContactModal from "../components/ContactModal.astro";
+---
+
+<BaseLayout title="Page not found — Jamstain" description="This page doesn't exist.">
+  <WorksHeader />
+
+  <main class="not-found">
+    <section class="not-found__section">
+      <h1 class="not-found__title">Nothing here.</h1>
+      <p class="not-found__body">
+        This page wandered off. Try the <a href="/works/">artworks</a> or head back
+        <a href="/">home</a>.
+      </p>
+    </section>
+  </main>
+
+  <SiteFooter />
+  <ContactModal />
+</BaseLayout>
+
+<style>
+  .not-found {
+    min-height: calc(100dvh - 5rem);
+    display: flex;
+    align-items: center;
+  }
+
+  .not-found__section {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 3rem 2.5rem 6rem;
+  }
+
+  .not-found__title {
+    font-family: "ReenieBeanie", cursive;
+    font-style: normal;
+    font-weight: 400;
+    font-size: clamp(3.5rem, 8vw, 6rem);
+    line-height: 1;
+    margin: 0 0 1rem;
+    letter-spacing: 0.02em;
+  }
+
+  .not-found__body {
+    color: var(--ink-soft);
+    max-width: 40ch;
+  }
+
+  .not-found__body a {
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  @media (max-width: 720px) {
+    .not-found__section {
+      padding: 2rem 1.25rem 5rem;
+    }
+  }
+</style>

@@ -5,9 +5,18 @@ interface Props {
   title: string;
   description: string;
   isLanding?: boolean;
+  /** Absolute or root-relative URL for social share previews. Defaults to the site's brand image. */
+  image?: string;
 }
 
-const { title, description, isLanding = false } = Astro.props;
+const { title, description, isLanding = false, image = "/businesscat.webp" } = Astro.props;
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const socialImageURL = new URL(image, Astro.site);
+
+// Self-hosted Umami — leave PUBLIC_UMAMI_SRC/PUBLIC_UMAMI_WEBSITE_ID unset to
+// skip analytics entirely (e.g. local dev). See .env.example.
+const umamiSrc = import.meta.env.PUBLIC_UMAMI_SRC;
+const umamiWebsiteId = import.meta.env.PUBLIC_UMAMI_WEBSITE_ID;
 ---
 
 <!doctype html>
@@ -17,16 +26,29 @@ const { title, description, isLanding = false } = Astro.props;
     <link rel="icon" type="image/x-icon" href="/favicon.ico?v=1" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalURL} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:image" content={socialImageURL} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={socialImageURL} />
     <title>{title}</title>
+    <link rel="preconnect" href="https://cdn.sanity.io" crossorigin />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300&family=Inter:wght@300;400;500&display=swap"
       rel="stylesheet"
     />
+    {
+      umamiSrc && umamiWebsiteId && (
+        <script is:inline defer src={umamiSrc} data-website-id={umamiWebsiteId}></script>
+      )
+    }
   </head>
   <body>
     <div id="app">

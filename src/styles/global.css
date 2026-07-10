@@ -9,7 +9,7 @@
   --bg: #ffffff;
   --ink: #1a1a1a;
   --ink-soft: #4a4a4a;
-  --rule: #e9e9e9;
+  --rule: #ffffff;
   --accent: #2f5d3a;
   --serif: "Cormorant Garamond", Georgia, "Times New Roman", serif;
   --sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -147,7 +147,11 @@ button {
 
 .oeuvre-frame {
   position: relative;
+  display: block;
   width: 100%;
+  border: none;
+  padding: 0;
+  background-color: var(--rule);
   transform: scale(1);
   transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
 }
@@ -172,24 +176,7 @@ button {
 }
 
 .oeuvre-caption__title {
-  font-family: var(--serif);
-  font-style: italic;
-}
-
-.status-badge {
-  font-size: 0.65rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  white-space: nowrap;
-  color: var(--ink-soft);
-}
-
-.status-badge--sold {
-  color: #a33;
-}
-
-.status-badge--available {
-  color: var(--accent);
+  font-family: var(--sans);
 }
 
 /* ---------- Lightbox ---------- */
@@ -235,6 +222,12 @@ button {
   width: 100%;
   height: 100%;
   object-fit: contain;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.lightbox__frame img.is-loaded {
+  opacity: 1;
 }
 
 .lightbox__caption {
@@ -273,13 +266,17 @@ button {
   align-items: start;
 }
 
+.artwork__frame {
+  background-color: var(--rule);
+}
+
 .artwork__frame img {
   width: 100%;
   height: auto;
 }
 
 .artwork__title {
-  font-family: var(--serif);
+  font-family: "ReenieBeanie", cursive;
   font-style: italic;
   font-weight: 400;
   font-size: clamp(2rem, 4vw, 2.75rem);
