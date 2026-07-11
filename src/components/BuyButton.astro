@@ -29,7 +29,15 @@ const formattedPrice =
       Not for sale
     </button>
   ) : artwork.buyLink ? (
-    <a class="buy-button" href={artwork.buyLink} target="_blank" rel="noopener noreferrer">
+    <a
+      class="buy-button"
+      href={artwork.buyLink}
+      target="_blank"
+      rel="noopener noreferrer"
+      data-umami-event="buy-click"
+      data-umami-event-artwork={artwork.title}
+      data-umami-event-price={artwork.price ?? ""}
+    >
       Buy this piece
     </a>
   ) : (
