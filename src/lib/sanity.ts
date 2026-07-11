@@ -25,6 +25,20 @@ if (isSanityConfigured) {
 const builder = client ? createImageUrlBuilder(client) : null;
 
 /**
+ * Whether a source can actually be handled by the Sanity image builder.
+ *
+ * Our GROQ projections return `image.asset->url` (a full cdn.sanity.io URL),
+ * and raw refs look like `image-abc123-2000x3000-jpg`. Anything else — most
+ * notably the local placeholder paths in mock-data (e.g. "/cats.webp") — is
+ * NOT a Sanity asset, and feeding it to the builder throws
+ * "Malformed asset _ref". Those local paths are already usable as-is.
+ */
+function isSanitySource(source: unknown): boolean {
+  if (typeof source !== "string") return true;
+  return source.includes("cdn.sanity.io") || source.startsWith("image-");
+}
+
+/**
  * Builds an optimized Sanity CDN URL for the given image source (accepts a
  * plain asset URL, which is what our GROQ projections return).
  *
@@ -33,7 +47,9 @@ const builder = client ? createImageUrlBuilder(client) : null;
  * ship the original, unoptimized master file to the browser.
  */
 export function urlForImage(source: unknown, width: number, quality = 75) {
-  if (!builder || !source) return typeof source === "string" ? source : "";
+  if (!builder || !source || !isSanitySource(source)) {
+    return typeof source === "string" ? source : "";
+  }
   return builder
     .image(source as any)
     .width(Math.round(width))
@@ -45,7 +61,7 @@ export function urlForImage(source: unknown, width: number, quality = 75) {
 
 /** A comma-separated `srcset` of the same image at several widths. */
 export function srcSetForImage(source: unknown, widths: number[], quality = 75) {
-  if (!builder || !source) return "";
+  if (!builder || !source || !isSanitySource(source)) return "";
   return widths.map((w) => `${urlForImage(source, w, quality)} ${w}w`).join(", ");
 }
 
