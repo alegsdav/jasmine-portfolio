@@ -39,6 +39,7 @@ const web3formsKey = import.meta.env.PUBLIC_WEB3FORMS_KEY;
 </div>
 
 <script
+  id="web3forms-client-script"
   src="https://web3forms.com/client/script.js"
   integrity="sha384-RAEN05LS0g1hNSQ83f+OkhWoEoxdCuUHArmMFGnF9YJzre1Fgg997JEue49FL+zH"
   crossorigin="anonymous"
@@ -72,6 +73,24 @@ const web3formsKey = import.meta.env.PUBLIC_WEB3FORMS_KEY;
     status.classList.toggle("is-error", isError);
   }
 
+  // Resource-load failures and handled fetch errors don't throw catchable
+  // exceptions, so Sentry's default handlers never see them. Re-throwing
+  // async turns them into uncaught errors that Sentry does pick up
+  // automatically, without needing to import the Sentry SDK directly here
+  // (which would ship it on every page even when PUBLIC_SENTRY_DSN is unset).
+  function reportSilentFailure(message: string) {
+    console.warn(`[ContactModal] ${message}`);
+    setTimeout(() => {
+      throw new Error(message);
+    });
+  }
+
+  document.getElementById("web3forms-client-script")?.addEventListener("error", () => {
+    reportSilentFailure(
+      "Web3Forms client script failed to load (SRI mismatch, network error, or blocked) — captcha will not render and the contact form is silently broken.",
+    );
+  });
+
   closeBtn.addEventListener("click", closeModal);
   document.addEventListener("open-contact-modal", openModal);
 
@@ -88,7 +107,7 @@ const web3formsKey = import.meta.env.PUBLIC_WEB3FORMS_KEY;
     const data = new FormData(form);
 
     if (!web3formsKey) {
-      console.warn("[ContactModal] PUBLIC_WEB3FORMS_KEY is not set — cannot send message.");
+      reportSilentFailure("PUBLIC_WEB3FORMS_KEY is not set — cannot send message.");
       setStatus("We're having issues sending messages right now. Please try again later.", true);
       return;
     }
@@ -122,9 +141,16 @@ const web3formsKey = import.meta.env.PUBLIC_WEB3FORMS_KEY;
           setStatus("");
         }, 1800);
       } else {
+        // No PII (name/email/message) in the report — just enough to debug.
+        reportSilentFailure(
+          `Web3Forms submission rejected: HTTP ${res.status}${result?.message ? ` — ${result.message}` : ""}`,
+        );
         setStatus("We're having issues sending messages right now. Please try again later.", true);
       }
-    } catch {
+    } catch (err) {
+      reportSilentFailure(
+        `Web3Forms submission failed: ${err instanceof Error ? err.message : "network error"}`,
+      );
       setStatus("We're having issues sending messages right now. Please try again later.", true);
     } finally {
       submitBtn.disabled = false;
