@@ -3,7 +3,6 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import WorksHeader from "../../components/WorksHeader.astro";
 import SiteFooter from "../../components/SiteFooter.astro";
 import ContactModal from "../../components/ContactModal.astro";
-import BuyButton from "../../components/BuyButton.astro";
 import { getAllArtworks, urlForImage, srcSetForImage } from "../../lib/sanity";
 import type { Artwork } from "../../lib/types";
 
@@ -36,7 +35,7 @@ const socialImage = urlForImage(artwork.image.url, 1200, 80);
 
   <main class="works-main">
     <section class="works-section">
-      <a href="/works/" class="artwork__back">Back to artworks</a>
+      <a href="/gallery/" class="artwork__back">Back to gallery</a>
 
       <div class="artwork">
         <div class="artwork__frame">
@@ -61,8 +60,6 @@ const socialImage = urlForImage(artwork.image.url, 1200, 80);
             {artwork.year && <span>{artwork.year}</span>}
           </p>
           {artwork.description && <p class="artwork__description">{artwork.description}</p>}
-
-          <BuyButton artwork={artwork} />
         </div>
       </div>
     </section>

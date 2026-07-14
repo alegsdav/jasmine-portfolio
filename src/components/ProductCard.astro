@@ -1,0 +1,42 @@
+---
+import type { Product } from "../lib/types";
+import { urlForImage, srcSetForImage } from "../lib/sanity";
+
+interface Props {
+  product: Product;
+}
+
+const { product } = Astro.props;
+
+const THUMB_WIDTHS = [400, 640, 960];
+const thumbSrc = urlForImage(product.image.url, 640);
+const thumbSrcSet = srcSetForImage(product.image.url, THUMB_WIDTHS) || undefined;
+
+const formattedPrice = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: product.currency || "USD",
+  maximumFractionDigits: 0,
+}).format(product.price);
+---
+
+<article class="store-item">
+  <a href={`/store/${product.slug}/`} class="store-item__link">
+    <div class="store-item__frame">
+      <img
+        src={thumbSrc}
+        srcset={thumbSrcSet}
+        sizes="(max-width: 720px) 100vw, (max-width: 860px) 50vw, 320px"
+        width={product.image.width}
+        height={product.image.height}
+        alt={product.image.alt}
+        loading="lazy"
+        decoding="async"
+      />
+    </div>
+    <div class="store-item__caption">
+      <h2 class="store-item__title">{product.title}</h2>
+      <p class="store-item__price">{formattedPrice}</p>
+      {product.status === "sold-out" && <span class="store-item__badge">Sold out</span>}
+    </div>
+  </a>
+</article>

@@ -1,5 +1,6 @@
 ---
 import "../styles/global.css";
+import NavBar from "../components/NavBar.astro";
 
 interface Props {
   title: string;
@@ -52,6 +53,7 @@ const umamiWebsiteId = import.meta.env.PUBLIC_UMAMI_WEBSITE_ID;
   </head>
   <body>
     <div id="app">
+      {isLanding && <NavBar />}
       <slot />
     </div>
   </body>

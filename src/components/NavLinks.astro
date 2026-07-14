@@ -1,0 +1,51 @@
+---
+---
+
+<ul class="nav-links">
+  <li><a href="/gallery/">Gallery</a></li>
+  <li><a href="/about/">About</a></li>
+  <li><button type="button" data-open-contact>Contact</button></li>
+  <li><a href="/store/">Store</a></li>
+</ul>
+
+<style>
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 2.25rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .nav-links a,
+  .nav-links button {
+    background: none;
+    border: none;
+    padding: 0;
+    color: var(--ink);
+    font-family: var(--sans);
+    font-weight: 300;
+    font-size: 0.95rem;
+    letter-spacing: 0.02em;
+  }
+
+  @media (max-width: 480px) {
+    .nav-links {
+      gap: 1.25rem;
+    }
+
+    .nav-links a,
+    .nav-links button {
+      font-size: 0.85rem;
+    }
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>("[data-open-contact]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      document.dispatchEvent(new CustomEvent("open-contact-modal"));
+    });
+  });
+</script>

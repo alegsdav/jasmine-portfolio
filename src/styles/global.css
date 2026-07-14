@@ -13,6 +13,7 @@
   --accent: #2f5d3a;
   --serif: "Cormorant Garamond", Georgia, "Times New Roman", serif;
   --sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --nav-height: 4rem;
 }
 
 *,
@@ -83,9 +84,17 @@ button {
 
 /* ---------- Works page header ---------- */
 .works-header {
+  position: relative;
   display: flex;
   align-items: center;
   padding: 2rem 2.5rem 1rem;
+}
+
+.works-header__nav {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .brand {
@@ -177,6 +186,66 @@ button {
 
 .oeuvre-caption__title {
   font-family: var(--sans);
+}
+
+/* ---------- Store grid ---------- */
+.store-gallery {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+}
+
+.store-item__link {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  color: inherit;
+}
+
+.store-item__link:hover {
+  opacity: 1;
+}
+
+.store-item__frame {
+  background-color: var(--rule);
+}
+
+.store-item__frame img {
+  width: 100%;
+  height: auto;
+}
+
+.store-item__caption {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem 0.75rem;
+}
+
+.store-item__title {
+  margin: 0;
+  font-family: var(--sans);
+  font-size: 0.95rem;
+  font-weight: 400;
+}
+
+.store-item__price {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: 1rem;
+  color: var(--ink-soft);
+}
+
+.store-item__badge {
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.store-empty {
+  color: var(--ink-soft);
+  max-width: 40ch;
 }
 
 /* ---------- Lightbox ---------- */
@@ -298,7 +367,7 @@ button {
   max-width: 40ch;
 }
 
-.artwork__price {
+.price-tag {
   font-family: var(--serif);
   font-size: 1.5rem;
   margin: 0 0 1.25rem;
@@ -354,7 +423,7 @@ html.is-landing body {
 .hero {
   position: relative;
   width: 100%;
-  height: 100dvh;
+  height: calc(100dvh - var(--nav-height));
   background: var(--bg);
   display: flex;
   align-items: center;
@@ -392,45 +461,14 @@ html.is-landing body {
   object-position: left bottom;
 }
 
-.hero__logo-link {
+.hero__logo {
   --hero-title-offset-y: -50px;
 
   position: relative;
   z-index: 5;
   display: block;
   transform: translateY(var(--hero-title-offset-y));
-  cursor: pointer;
-  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
   transform-origin: center;
-}
-
-.hero__logo-link:hover {
-  transform: translateY(var(--hero-title-offset-y)) scale(1.06);
-  opacity: 1;
-}
-
-.hero__eyebrow {
-  position: absolute;
-  bottom: 100%;
-  left: 50%;
-  transform: translateX(-50%) rotate(-3deg);
-  font-family: "ReenieBeanie", cursive;
-  font-size: 2rem;
-  line-height: 1;
-  color: var(--ink);
-  white-space: nowrap;
-  pointer-events: none;
-  animation: eyebrow-bob 2.4s ease-in-out infinite;
-}
-
-@keyframes eyebrow-bob {
-  0%,
-  100% {
-    transform: translateX(-50%) translateY(0) rotate(-3deg);
-  }
-  50% {
-    transform: translateX(-50%) translateY(-0.4rem) rotate(-3deg);
-  }
 }
 
 .hero__title-img {
@@ -654,6 +692,11 @@ html.is-landing body {
   .oeuvre-item--half { grid-column: span 12; }
   .oeuvre-item--third { grid-column: span 6; }
 
+  .store-gallery {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+
   .artwork {
     grid-template-columns: 1fr;
   }
@@ -661,7 +704,15 @@ html.is-landing body {
 
 @media (max-width: 720px) {
   .works-header {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
     padding: 1rem 1.25rem;
+  }
+
+  .works-header__nav {
+    position: static;
+    transform: none;
   }
 
   .works-section {
@@ -672,6 +723,11 @@ html.is-landing body {
 
   .oeuvre-gallery {
     gap: 1rem;
+  }
+
+  .store-gallery {
+    grid-template-columns: 1fr;
+    gap: 2rem;
   }
 
   .hero__cat--left {

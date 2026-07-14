@@ -1,14 +1,14 @@
 # Jamstain — Art Portfolio
 
-An art portfolio built with **Astro** + **TypeScript**, with artwork content managed in **Sanity Studio** (so the artist/client can add, edit, and price pieces without touching code), and a lightweight path to selling individual pieces via **Stripe Payment Links**.
+An art portfolio built with **Astro** + **TypeScript**, with content managed in **Sanity Studio** (gallery artworks and store products are edited separately), and a lightweight path to selling store items via **Stripe Payment Links**.
 
 The site runs and looks complete out of the box with sample placeholder artwork, even before Sanity/Web3Forms/Stripe are connected — see [Running without any setup](#running-without-any-setup).
 
 ## Stack
 
 - [Astro](https://astro.build/) — static site generator, TypeScript-first
-- [Sanity](https://www.sanity.io/) — headless CMS for artwork content (Studio lives in `studio/`)
-- [Stripe Payment Links](https://stripe.com/payments/payment-links) — no-backend checkout, one link per artwork
+- [Sanity](https://www.sanity.io/) — headless CMS with separate **Gallery** and **Store** sections in Studio
+- [Stripe Payment Links](https://stripe.com/payments/payment-links) — no-backend checkout, one link per store product
 - [Web3Forms](https://web3forms.com/) — contact form submissions, no backend required
 
 ## Project structure
@@ -18,10 +18,13 @@ The site runs and looks complete out of the box with sample placeholder artwork,
 ├── src/
 │   ├── pages/
 │   │   ├── index.astro          # Landing / hero page
-│   │   └── works/
-│   │       ├── index.astro      # Gallery grid (reads artworks from Sanity)
-│   │       └── [slug].astro     # Individual artwork page (description, price, Buy button)
-│   ├── components/              # Header, Footer, ContactModal, Lightbox, ArtworkCard, BuyButton
+│   │   ├── gallery/
+│   │   │   ├── index.astro      # Gallery grid (artworks from Sanity — not for sale)
+│   │   │   └── [slug].astro     # Individual artwork page
+│   │   └── store/
+│   │       ├── index.astro      # Store grid (products from Sanity)
+│   │       └── [slug].astro     # Individual product page (price, Buy button)
+│   ├── components/              # Header, Footer, ContactModal, Lightbox, ArtworkCard, ProductCard, BuyButton
 │   ├── layouts/BaseLayout.astro
 │   ├── lib/
 │   │   ├── sanity.ts            # Sanity client + queries (falls back to mock-data.ts)
@@ -29,7 +32,9 @@ The site runs and looks complete out of the box with sample placeholder artwork,
 │   │   └── types.ts
 │   └── styles/global.css
 ├── studio/                      # Sanity Studio (separate app — the client's editing UI)
-│   ├── schemaTypes/artwork.ts   # Fields: title, image, price, status, buy link, etc.
+│   ├── schemaTypes/
+│   │   ├── artwork.ts           # Gallery pieces (title, image, medium, dimensions, etc.)
+│   │   └── product.ts           # Store items (title, image, price, status, buy link)
 │   └── sanity.config.ts
 ├── public/                      # Static assets (fonts, hero images)
 ├── .env.example                 # Copy to .env and fill in
@@ -47,13 +52,13 @@ npm install
 npm run dev
 ```
 
-The site runs at <http://localhost:5173> with sample placeholder artwork (using the existing cat images) so you can see the full layout — gallery grid, lightbox, artwork detail pages, contact modal — before connecting anything. The works page shows a small red notice reminding you it's sample data.
+The site runs at <http://localhost:5173> with sample placeholder artwork (using the existing cat images) so you can see the full layout — gallery grid, lightbox, artwork detail pages, contact modal — before connecting anything. The gallery page shows a small red notice reminding you it's sample data.
 
 The contact form works immediately too: without a Web3Forms key configured, submitting opens the visitor's email client with the message pre-filled, so nothing is ever silently lost.
 
 ## Setting up Sanity (content management)
 
-This lets you (or your client) add/edit artwork — title, image, price, sold status, description — from a clean web UI, no code required.
+This lets you (or your client) manage gallery artworks and store products separately — title, image, description, and (for store items) price and buy links — from a clean web UI, no code required.
 
 1. Create a free account at [sanity.io](https://www.sanity.io/).
 2. From the `studio/` folder, log in and initialize:
@@ -72,7 +77,9 @@ This lets you (or your client) add/edit artwork — title, image, price, sold st
    ```bash
    npm run studio:dev
    ```
-   This opens a Studio UI (usually at `http://localhost:3333`) where you can create "Artwork" entries: upload an image, set title/medium/dimensions/year, write a description, mark it Available/Sold/Not for sale, and (if available) set a price and paste a Stripe Payment Link.
+   This opens a Studio UI (usually at `http://localhost:3333`) with two sections:
+   - **Gallery** — create artwork entries (image, title, medium, dimensions, year, description). Gallery pieces are never for sale.
+   - **Store** — create product entries (image, title, description, price, in-stock/sold-out status, Stripe buy link).
 5. Deploy the Studio so your client can use it from anywhere, without running anything locally:
    ```bash
    npm run studio:deploy
@@ -91,15 +98,15 @@ This lets you (or your client) add/edit artwork — title, image, price, sold st
 
 If you skip this step, the form still works — it just falls back to opening the visitor's default email app instead.
 
-## Selling a piece (Stripe Payment Links)
+## Selling a store product (Stripe Payment Links)
 
-No cart, no backend — each artwork gets its own checkout link.
+No cart, no backend — each store product gets its own checkout link.
 
 1. Create a free [Stripe](https://stripe.com) account.
-2. In the Stripe Dashboard, go to **Payment Links** → **New** → create a product for the piece (name, price, and optionally its image), set quantity limit to 1 for one-of-a-kind pieces.
+2. In the Stripe Dashboard, go to **Payment Links** → **New** → create a product (name, price, and optionally its image).
 3. Copy the generated link (e.g. `https://buy.stripe.com/...`).
-4. In Sanity Studio, open that artwork, set **Status** to "Available," and paste the link into **Buy link (Stripe Payment Link)**.
-5. The "Buy this piece" button on the artwork's page will now go straight to Stripe checkout. Once it sells, switch the Sanity status to "Sold" — the button automatically becomes disabled and shows "Sold."
+4. In Sanity Studio, open the product under **Store**, set **Status** to "In stock," and paste the link into **Buy link (Stripe Payment Link)**.
+5. The "Buy now" button on the product's page will go straight to Stripe checkout. Once it sells out, switch the Sanity status to "Sold out" — the button automatically becomes disabled.
 
 If you later want an actual shopping cart (e.g. selling prints in multiple sizes/quantities), look at [Snipcart](https://snipcart.com/) or a [Shopify Buy Button](https://www.shopify.com/buy-button) — both can be embedded into this same Astro site without a rebuild.
 

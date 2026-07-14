@@ -1,0 +1,17 @@
+---
+import NavLinks from "./NavLinks.astro";
+---
+
+<nav class="nav-bar" aria-label="Primary">
+  <NavLinks />
+</nav>
+
+<style>
+  .nav-bar {
+    position: static;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: var(--nav-height);
+  }
+</style>

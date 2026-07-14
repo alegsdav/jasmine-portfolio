@@ -1,8 +1,8 @@
 import { defineField, defineType } from "sanity";
 
 export default defineType({
-  name: "artwork",
-  title: "Artwork",
+  name: "product",
+  title: "Product",
   type: "document",
   fields: [
     defineField({
@@ -14,7 +14,7 @@ export default defineType({
     defineField({
       name: "slug",
       title: "Slug",
-      description: "Used in the page URL, e.g. /gallery/this-slug. Click 'Generate' after entering a title.",
+      description: "Used in the page URL, e.g. /store/this-slug. Click 'Generate' after entering a title.",
       type: "slug",
       options: { source: "title", maxLength: 96 },
       validation: (Rule) => Rule.required(),
@@ -35,52 +35,50 @@ export default defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
-      name: "year",
-      title: "Year",
-      type: "string",
-    }),
-    defineField({
-      name: "medium",
-      title: "Medium",
-      description: "e.g. Graphite on paper, Oil on canvas",
-      type: "string",
-    }),
-    defineField({
-      name: "dimensions",
-      title: "Dimensions",
-      description: "e.g. 11 × 14 in",
-      type: "string",
-    }),
-    defineField({
       name: "description",
       title: "Description",
       type: "text",
       rows: 4,
     }),
     defineField({
-      name: "size",
-      title: "Gallery size",
-      description: "How much space this piece takes up in the works grid.",
+      name: "status",
+      title: "Status",
       type: "string",
       options: {
         list: [
-          { title: "Third width", value: "third" },
-          { title: "Half width", value: "half" },
-          { title: "Full width", value: "wide" },
+          { title: "In stock", value: "in-stock" },
+          { title: "Sold out", value: "sold-out" },
         ],
+        layout: "radio",
       },
-      initialValue: "third",
+      initialValue: "in-stock",
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
-      name: "featured",
-      title: "Featured",
-      type: "boolean",
-      initialValue: false,
+      name: "price",
+      title: "Price",
+      description: "Whole number, e.g. 5.",
+      type: "number",
+      validation: (Rule) => Rule.required(),
+    }),
+    defineField({
+      name: "currency",
+      title: "Currency",
+      type: "string",
+      initialValue: "USD",
+    }),
+    defineField({
+      name: "buyLink",
+      title: "Buy link (Stripe Payment Link)",
+      description:
+        "Paste the Stripe Payment Link URL for this product here once it's ready. Leave blank to show 'Purchase coming soon'.",
+      type: "url",
+      hidden: ({ document }) => document?.status !== "in-stock",
     }),
     defineField({
       name: "order",
       title: "Sort order",
-      description: "Lower numbers appear first in the gallery.",
+      description: "Lower numbers appear first in the store.",
       type: "number",
     }),
   ],
@@ -88,12 +86,12 @@ export default defineType({
     select: {
       title: "title",
       media: "image",
-      year: "year",
+      status: "status",
     },
-    prepare({ title, media, year }) {
+    prepare({ title, media, status }) {
       return {
         title,
-        subtitle: year,
+        subtitle: status,
         media,
       };
     },

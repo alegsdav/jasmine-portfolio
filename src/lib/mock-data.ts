@@ -1,4 +1,4 @@
-import type { Artwork } from "./types";
+import type { Artwork, Product } from "./types";
 
 /**
  * Local fallback content used whenever Sanity isn't configured yet
@@ -16,10 +16,6 @@ export const MOCK_ARTWORKS: Artwork[] = [
     dimensions: "11 × 14 in",
     description:
       "A quiet study exploring light and form. Sample placeholder — replace with real work in Sanity Studio.",
-    price: 220,
-    currency: "USD",
-    status: "available",
-    buyLink: "",
     featured: true,
     size: "wide",
     image: { url: "/cats.webp", alt: "Placeholder artwork", width: 1024, height: 622 },
@@ -33,10 +29,6 @@ export const MOCK_ARTWORKS: Artwork[] = [
     medium: "Graphite on paper",
     dimensions: "9 × 12 in",
     description: "Sample placeholder — replace with real work in Sanity Studio.",
-    price: 180,
-    currency: "USD",
-    status: "available",
-    buyLink: "",
     size: "half",
     image: { url: "/cat-left.webp", alt: "Placeholder artwork", width: 736, height: 812 },
     order: 2,
@@ -49,9 +41,6 @@ export const MOCK_ARTWORKS: Artwork[] = [
     medium: "Graphite on paper",
     dimensions: "9 × 12 in",
     description: "Sample placeholder — replace with real work in Sanity Studio.",
-    price: 180,
-    currency: "USD",
-    status: "sold",
     size: "half",
     image: { url: "/cat-right.webp", alt: "Placeholder artwork", width: 876, height: 580 },
     order: 3,
@@ -64,7 +53,6 @@ export const MOCK_ARTWORKS: Artwork[] = [
     medium: "Charcoal on paper",
     dimensions: "8 × 10 in",
     description: "Sample placeholder — replace with real work in Sanity Studio.",
-    status: "not-for-sale",
     size: "third",
     image: { url: "/cats.webp", alt: "Placeholder artwork", width: 1024, height: 622 },
     order: 4,
@@ -77,10 +65,6 @@ export const MOCK_ARTWORKS: Artwork[] = [
     medium: "Graphite on paper",
     dimensions: "8 × 10 in",
     description: "Sample placeholder — replace with real work in Sanity Studio.",
-    price: 150,
-    currency: "USD",
-    status: "available",
-    buyLink: "",
     size: "third",
     image: { url: "/cat-left.webp", alt: "Placeholder artwork", width: 736, height: 812 },
     order: 5,
@@ -93,12 +77,36 @@ export const MOCK_ARTWORKS: Artwork[] = [
     medium: "Ink on paper",
     dimensions: "8 × 10 in",
     description: "Sample placeholder — replace with real work in Sanity Studio.",
-    price: 150,
-    currency: "USD",
-    status: "available",
-    buyLink: "",
     size: "third",
     image: { url: "/cat-right.webp", alt: "Placeholder artwork", width: 876, height: 580 },
     order: 6,
+  },
+];
+
+/** Local fallback store items — same idea as MOCK_ARTWORKS, but for the store. */
+export const MOCK_PRODUCTS: Product[] = [
+  {
+    id: "mock-product-1",
+    slug: "business-cat-sticker",
+    title: "Business Cat Sticker",
+    description: "Sample placeholder — replace with a real product in Sanity Studio.",
+    price: 5,
+    currency: "USD",
+    status: "in-stock",
+    buyLink: "",
+    image: { url: "/businesscat.webp", alt: "Placeholder sticker", width: 900, height: 790 },
+    order: 1,
+  },
+  {
+    id: "mock-product-2",
+    slug: "cats-sticker",
+    title: "Cats Sticker",
+    description: "Sample placeholder — replace with a real product in Sanity Studio.",
+    price: 5,
+    currency: "USD",
+    status: "in-stock",
+    buyLink: "",
+    image: { url: "/cats.webp", alt: "Placeholder sticker", width: 1024, height: 622 },
+    order: 2,
   },
 ];

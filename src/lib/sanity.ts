@@ -1,7 +1,7 @@
 import { createClient, type SanityClient } from "@sanity/client";
 import { createImageUrlBuilder } from "@sanity/image-url";
-import type { Artwork } from "./types";
-import { MOCK_ARTWORKS } from "./mock-data";
+import type { Artwork, Product } from "./types";
+import { MOCK_ARTWORKS, MOCK_PRODUCTS } from "./mock-data";
 
 const projectId = import.meta.env.PUBLIC_SANITY_PROJECT_ID;
 const dataset = import.meta.env.PUBLIC_SANITY_DATASET || "production";
@@ -73,12 +73,26 @@ const ARTWORK_PROJECTION = `{
   medium,
   dimensions,
   description,
+  featured,
+  size,
+  order,
+  "image": {
+    "url": image.asset->url,
+    "alt": coalesce(image.alt, title),
+    "width": image.asset->metadata.dimensions.width,
+    "height": image.asset->metadata.dimensions.height
+  }
+}`;
+
+const PRODUCT_PROJECTION = `{
+  "id": _id,
+  "slug": slug.current,
+  title,
+  description,
   price,
   currency,
   status,
   buyLink,
-  featured,
-  size,
   order,
   "image": {
     "url": image.asset->url,
@@ -119,5 +133,39 @@ export async function getArtworkBySlug(slug: string): Promise<Artwork | undefine
   } catch (err) {
     console.error("Failed to fetch artwork from Sanity, falling back to sample data.", err);
     return MOCK_ARTWORKS.find((a) => a.slug === slug);
+  }
+}
+
+/** All store products, sorted for display. Falls back to local sample data until Sanity is connected. */
+export async function getAllProducts(): Promise<Product[]> {
+  if (!client) {
+    return [...MOCK_PRODUCTS].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+  }
+
+  try {
+    const products = await client.fetch<Product[]>(
+      `*[_type == "product"] | order(order asc, _createdAt desc) ${PRODUCT_PROJECTION}`,
+    );
+    return products;
+  } catch (err) {
+    console.error("Failed to fetch products from Sanity, falling back to sample data.", err);
+    return [...MOCK_PRODUCTS].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+  }
+}
+
+export async function getProductBySlug(slug: string): Promise<Product | undefined> {
+  if (!client) {
+    return MOCK_PRODUCTS.find((p) => p.slug === slug);
+  }
+
+  try {
+    const product = await client.fetch<Product | null>(
+      `*[_type == "product" && slug.current == $slug][0] ${PRODUCT_PROJECTION}`,
+      { slug },
+    );
+    return product ?? undefined;
+  } catch (err) {
+    console.error("Failed to fetch product from Sanity, falling back to sample data.", err);
+    return MOCK_PRODUCTS.find((p) => p.slug === slug);
   }
 }

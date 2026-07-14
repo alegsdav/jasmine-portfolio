@@ -1,44 +1,37 @@
 ---
-import type { Artwork } from "../lib/types";
+import type { Product } from "../lib/types";
 
 interface Props {
-  artwork: Artwork;
+  product: Product;
 }
 
-const { artwork } = Astro.props;
+const { product } = Astro.props;
 
-const formattedPrice =
-  typeof artwork.price === "number"
-    ? new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: artwork.currency || "USD",
-        maximumFractionDigits: 0,
-      }).format(artwork.price)
-    : null;
+const formattedPrice = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: product.currency || "USD",
+  maximumFractionDigits: 0,
+}).format(product.price);
 ---
 
-{formattedPrice && <p class="artwork__price">{formattedPrice}</p>}
+<p class="price-tag">{formattedPrice}</p>
 
 {
-  artwork.status === "sold" ? (
+  product.status === "sold-out" ? (
     <button class="buy-button buy-button--disabled" disabled>
-      Sold
+      Sold out
     </button>
-  ) : artwork.status === "not-for-sale" ? (
-    <button class="buy-button buy-button--disabled" disabled>
-      Not for sale
-    </button>
-  ) : artwork.buyLink ? (
+  ) : product.buyLink ? (
     <a
       class="buy-button"
-      href={artwork.buyLink}
+      href={product.buyLink}
       target="_blank"
       rel="noopener noreferrer"
       data-umami-event="buy-click"
-      data-umami-event-artwork={artwork.title}
-      data-umami-event-price={artwork.price ?? ""}
+      data-umami-event-product={product.title}
+      data-umami-event-price={product.price ?? ""}
     >
-      Buy this piece
+      Buy now
     </a>
   ) : (
     <>

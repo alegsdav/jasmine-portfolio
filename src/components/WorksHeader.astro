@@ -1,8 +1,13 @@
 ---
+import NavLinks from "./NavLinks.astro";
 ---
 
 <header class="works-header">
   <a href="/" class="brand" aria-label="Back to home">
     <img src="/jamstain.png" alt="Jamstain" class="brand__logo" />
   </a>
+
+  <nav class="works-header__nav" aria-label="Primary">
+    <NavLinks />
+  </nav>
 </header>

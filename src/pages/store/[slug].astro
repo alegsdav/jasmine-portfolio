@@ -1,0 +1,67 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import WorksHeader from "../../components/WorksHeader.astro";
+import SiteFooter from "../../components/SiteFooter.astro";
+import ContactModal from "../../components/ContactModal.astro";
+import BuyButton from "../../components/BuyButton.astro";
+import { getAllProducts, urlForImage, srcSetForImage } from "../../lib/sanity";
+import type { Product } from "../../lib/types";
+
+export async function getStaticPaths() {
+  const products = await getAllProducts();
+  return products.map((product) => ({
+    params: { slug: product.slug },
+    props: { product },
+  }));
+}
+
+interface Props {
+  product: Product;
+}
+
+const { product } = Astro.props;
+
+const DETAIL_WIDTHS = [640, 960, 1280, 1600, 2000];
+const detailSrc = urlForImage(product.image.url, 1280);
+const detailSrcSet = srcSetForImage(product.image.url, DETAIL_WIDTHS, 85) || undefined;
+const socialImage = urlForImage(product.image.url, 1200, 80);
+---
+
+<BaseLayout
+  title={`${product.title} — Jamstain`}
+  description={product.description || `${product.title} from the Jamstain store.`}
+  image={socialImage}
+>
+  <WorksHeader />
+
+  <main class="works-main">
+    <section class="works-section">
+      <a href="/store/" class="artwork__back">Back to store</a>
+
+      <div class="artwork">
+        <div class="artwork__frame">
+          <img
+            src={detailSrc}
+            srcset={detailSrcSet}
+            sizes="(max-width: 860px) 100vw, 60vw"
+            width={product.image.width}
+            height={product.image.height}
+            alt={product.image.alt}
+            loading="eager"
+            fetchpriority="high"
+            decoding="async"
+          />
+        </div>
+
+        <div>
+          <h1 class="artwork__title">{product.title}</h1>
+          {product.description && <p class="artwork__description">{product.description}</p>}
+          <BuyButton product={product} />
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <SiteFooter />
+  <ContactModal />
+</BaseLayout>

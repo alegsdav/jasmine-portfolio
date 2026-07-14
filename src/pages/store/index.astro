@@ -1,0 +1,43 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import WorksHeader from "../../components/WorksHeader.astro";
+import SiteFooter from "../../components/SiteFooter.astro";
+import ContactModal from "../../components/ContactModal.astro";
+import ProductCard from "../../components/ProductCard.astro";
+import { getAllProducts, isSanityConfigured } from "../../lib/sanity";
+
+const products = await getAllProducts();
+---
+
+<BaseLayout title="Store — Jamstain" description="Stickers, prints, and more from Jamstain.">
+  <WorksHeader />
+
+  <main class="works-main">
+    <section class="works-section">
+      <h1 class="oeuvre-title">Store</h1>
+
+      {
+        !isSanityConfigured && (
+          <p style="color:#a33; font-size:0.85rem; margin:-2rem 0 2rem;">
+            Showing sample placeholder products — connect Sanity to manage real store items (see README).
+          </p>
+        )
+      }
+
+      {
+        products.length > 0 ? (
+          <div class="store-gallery">
+            {products.map((product) => (
+              <ProductCard product={product} />
+            ))}
+          </div>
+        ) : (
+          <p class="store-empty">Nothing in the store yet — check back soon.</p>
+        )
+      }
+    </section>
+  </main>
+
+  <SiteFooter />
+  <ContactModal />
+</BaseLayout>
