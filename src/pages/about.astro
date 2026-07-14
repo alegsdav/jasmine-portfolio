@@ -32,10 +32,16 @@ const socials = [
 
         <div class="about__body">
           <p>
-            Whatup hoes
+            Jasmine Wu is a 20-year-old digital artist and content creator based in the Bay Area. Her passion for art began at a young age, sparked by countless doodles she created in her free time. As she continued taking art classes throughout her childhood, she developed a strong foundation in color theory, composition, and traditional media, exploring techniques in charcoal, watercolor, acrylic, and graphite.
           </p>
           <p>
-            buy me stickers
+            Growing up, Jasmine also found inspiration in creative video games such as Animal Jam and Minecraft, which fueled her interest in digital illustration. This passion led her to refine her skills using industry-standard tools like Procreate and Adobe Photoshop, where she specializes in creating vibrant, expressive artwork.
+          </p>
+          <p>
+            Jasmine is currently pursuing a degree in Business Entrepreneurship at Las Positas College, combining her artistic background with the business knowledge needed to build a successful freelance creative career. She enjoys creating custom commissions, sharing her creative process online, and mentoring aspiring artists who are beginning their own artistic journeys.
+          </p>
+          <p>
+            If you'd like to commission artwork, collaborate on a project, or simply connect, feel free to reach out through the <button type="button" data-open-contact>Contact page</button>. Jasmine would love to hear from you!
           </p>
         </div>
 
@@ -69,10 +75,10 @@ const socials = [
     display: grid;
     grid-template-columns: 1fr 1.2fr;
     gap: 4rem;
-    align-items: center;
+    align-items: start;
     max-width: 1100px;
     margin: 0 auto;
-    padding: 3rem 2.5rem 6rem;
+    padding: 4rem 2.5rem 6rem;
   }
 
   .about__image {
@@ -111,6 +117,22 @@ const socials = [
     margin: 0 0 1.25rem;
   }
 
+  .about__body button[data-open-contact] {
+    background: none;
+    border: none;
+    padding: 0;
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
+    transition: opacity 0.2s ease;
+  }
+
+  .about__body button[data-open-contact]:hover {
+    opacity: 0.6;
+  }
+
   .about__socials {
     display: flex;
     flex-wrap: wrap;
@@ -130,7 +152,7 @@ const socials = [
     .about {
       grid-template-columns: 1fr;
       gap: 2.5rem;
-      padding: 2rem 1.25rem 5rem;
+      padding: 3rem 1.25rem 5rem;
     }
 
     .about__image {
