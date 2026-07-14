@@ -34,7 +34,7 @@ import ContactModal from "../components/ContactModal.astro";
       <div class="cat-scribble cat-scribble--right" aria-hidden="true">
         <svg width="200" height="160" viewBox="0 0 200 160" fill="none" overflow="visible">
           <path class="cs-path" d=""></path>
-          <text class="cs-label" x="182" y="2" text-anchor="end">contact me</text>
+          <text class="cs-label" x="182" y="2" text-anchor="end">my store</text>
         </svg>
       </div>
 
@@ -154,7 +154,7 @@ import ContactModal from "../components/ContactModal.astro";
     });
 
     catR.addEventListener("click", () => {
-      document.dispatchEvent(new CustomEvent("open-contact-modal"));
+      window.location.href = "/store/";
     });
   }
 

@@ -87,7 +87,9 @@ button {
   position: relative;
   display: flex;
   align-items: center;
-  padding: 2rem 2.5rem 1rem;
+  height: var(--nav-height);
+  padding: 0 2.5rem;
+  flex-shrink: 0;
 }
 
 .works-header__nav {
@@ -111,7 +113,7 @@ button {
 }
 
 .works-main {
-  min-height: calc(100dvh - 5rem);
+  min-height: calc(100dvh - var(--nav-height));
 }
 
 .works-section {
@@ -704,15 +706,7 @@ html.is-landing body {
 
 @media (max-width: 720px) {
   .works-header {
-    flex-direction: column;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 1rem 1.25rem;
-  }
-
-  .works-header__nav {
-    position: static;
-    transform: none;
+    padding: 0 1.25rem;
   }
 
   .works-section {
