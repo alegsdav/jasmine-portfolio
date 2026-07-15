@@ -18,9 +18,10 @@ import ContactModal from "../components/ContactModal.astro";
         alt="Graphite study of a cat, left"
         fetchpriority="high"
         decoding="async"
+        tabindex="0"
       />
 
-      <div class="cat-scribble cat-scribble--left" aria-hidden="true">
+      <div class="cat-scribble cat-scribble--left" aria-label="View gallery" tabindex="0" role="link">
         <svg width="200" height="70" viewBox="0 0 200 70" fill="none" overflow="visible">
           <path class="cs-path" d=""></path>
           <text class="cs-label" x="182" y="12" text-anchor="start">view gallery</text>
@@ -31,7 +32,7 @@ import ContactModal from "../components/ContactModal.astro";
         <img class="hero__title-img" src="/jamstain.png" alt="Jamstain" />
       </div>
 
-      <div class="cat-scribble cat-scribble--right" aria-hidden="true">
+      <div class="cat-scribble cat-scribble--right" aria-label="My store" tabindex="0" role="link">
         <svg width="200" height="160" viewBox="0 0 200 160" fill="none" overflow="visible">
           <path class="cs-path" d=""></path>
           <text class="cs-label" x="182" y="2" text-anchor="end">my store</text>
@@ -46,6 +47,7 @@ import ContactModal from "../components/ContactModal.astro";
         alt="Graphite study of a cat, right"
         fetchpriority="high"
         decoding="async"
+        tabindex="0"
       />
     </section>
   </main>
@@ -149,13 +151,38 @@ import ContactModal from "../components/ContactModal.astro";
       }
     });
 
-    catL.addEventListener("click", () => {
-      window.location.href = "/gallery/";
-    });
+    function wireHotspot(cat: HTMLElement, scrib: HTMLElement, href: string) {
+      function updateHotState() {
+        const hot =
+          cat.matches(":hover") ||
+          scrib.matches(":hover") ||
+          document.activeElement === cat ||
+          document.activeElement === scrib;
+        cat.classList.toggle("is-hot", hot);
+        scrib.classList.toggle("is-hot", hot);
+      }
 
-    catR.addEventListener("click", () => {
-      window.location.href = "/store/";
-    });
+      function navigate() {
+        window.location.href = href;
+      }
+
+      [cat, scrib].forEach((el) => {
+        el.addEventListener("mouseenter", updateHotState);
+        el.addEventListener("mouseleave", updateHotState);
+        el.addEventListener("focus", updateHotState);
+        el.addEventListener("blur", updateHotState);
+        el.addEventListener("click", navigate);
+        el.addEventListener("keydown", (e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            navigate();
+          }
+        });
+      });
+    }
+
+    wireHotspot(catL, scribL, "/gallery/");
+    wireHotspot(catR, scribR, "/store/");
   }
 
   initCatScribbles();

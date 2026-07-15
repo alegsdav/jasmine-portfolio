@@ -502,7 +502,7 @@ html.is-landing body {
   transform-origin: bottom center;
 }
 
-.hero__cat:hover {
+.hero__cat.is-hot {
   transform: scale(1.04);
 }
 
@@ -550,10 +550,12 @@ html.is-landing body {
   z-index: 6;
   opacity: 0;
   transition: opacity 0.15s ease;
+  cursor: pointer;
 }
 
 .cat-scribble.is-active {
   opacity: 1;
+  pointer-events: auto;
 }
 
 .cs-path,
@@ -571,6 +573,11 @@ html.is-landing body {
   font-size: 36px;
   fill: var(--ink);
   letter-spacing: 0.04em;
+  transition: opacity 0.2s ease;
+}
+
+.cat-scribble.is-hot .cs-label {
+  opacity: 0.6;
 }
 
 /* ---------- Shared section typography ---------- */
