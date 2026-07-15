@@ -1,65 +1,150 @@
 ---
+export interface ModalArtwork {
+  slug: string;
+  title: string;
+  year?: string;
+  medium?: string;
+  dimensions?: string;
+  description?: string;
+  imageSrc: string;
+  imageSrcSet?: string;
+  imageAlt: string;
+  imageWidth: number;
+  imageHeight: number;
+}
+
+interface Props {
+  artworks: ModalArtwork[];
+}
+
+const { artworks } = Astro.props;
 ---
 
-<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="View work">
-  <button class="lightbox__close" id="lightbox-close" aria-label="Close">&times;</button>
-  <div class="lightbox__content" id="lightbox-content">
-    <div class="lightbox__frame">
-      <img id="lightbox-image" src="" alt="" decoding="async" />
+<div
+  class="artwork-modal"
+  id="artwork-modal"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="artwork-modal-title"
+  hidden
+>
+  <div class="artwork-modal__backdrop" data-close-artwork-modal></div>
+  <div class="artwork-modal__panel">
+    <button type="button" class="artwork-modal__close" id="artwork-modal-close" aria-label="Close">
+      &times;
+    </button>
+    <div class="artwork-modal__scroll">
+      <div class="artwork-modal__body">
+        <div class="artwork-modal__frame">
+          <img id="artwork-modal-image" src="" alt="" decoding="async" />
+        </div>
+        <div class="artwork-modal__details">
+          <h2 class="artwork-modal__title" id="artwork-modal-title"></h2>
+          <p class="artwork-modal__meta" id="artwork-modal-meta" hidden></p>
+          <p class="artwork-modal__description" id="artwork-modal-description" hidden></p>
+        </div>
+      </div>
     </div>
-    <p class="lightbox__caption" id="lightbox-caption"></p>
   </div>
 </div>
 
-<script>
-  const lightbox = document.getElementById("lightbox")!;
-  const closeBtn = document.getElementById("lightbox-close")!;
-  const image = document.getElementById("lightbox-image") as HTMLImageElement;
-  const caption = document.getElementById("lightbox-caption")!;
+<script define:vars={{ artworks }}>
+  const modal = document.getElementById("artwork-modal");
+  const panel = modal.querySelector(".artwork-modal__panel");
+  const closeBtn = document.getElementById("artwork-modal-close");
+  const backdrop = modal.querySelector("[data-close-artwork-modal]");
+  const image = document.getElementById("artwork-modal-image");
+  const title = document.getElementById("artwork-modal-title");
+  const meta = document.getElementById("artwork-modal-meta");
+  const description = document.getElementById("artwork-modal-description");
 
-  function open(src: string, alt: string, title: string) {
+  const bySlug = Object.fromEntries(artworks.map((artwork) => [artwork.slug, artwork]));
+
+  function setMeta(artwork) {
+    const parts = [artwork.medium, artwork.dimensions, artwork.year].filter(Boolean);
+    meta.replaceChildren();
+
+    if (parts.length === 0) {
+      meta.hidden = true;
+      return;
+    }
+
+    parts.forEach((part) => {
+      const span = document.createElement("span");
+      span.textContent = part;
+      meta.appendChild(span);
+    });
+    meta.hidden = false;
+  }
+
+  function open(slug) {
+    const artwork = bySlug[slug];
+    if (!artwork) return;
+
     image.classList.remove("is-loaded");
-    image.src = src;
-    image.alt = alt;
-    caption.textContent = title;
-    lightbox.classList.add("is-open");
+    image.src = artwork.imageSrc;
+    if (artwork.imageSrcSet) {
+      image.srcset = artwork.imageSrcSet;
+    } else {
+      image.removeAttribute("srcset");
+    }
+    image.alt = artwork.imageAlt;
+    image.width = artwork.imageWidth;
+    image.height = artwork.imageHeight;
+
+    title.textContent = artwork.title;
+    setMeta(artwork);
+
+    if (artwork.description) {
+      description.textContent = artwork.description;
+      description.hidden = false;
+    } else {
+      description.textContent = "";
+      description.hidden = true;
+    }
+
+    modal.hidden = false;
+    requestAnimationFrame(() => modal.classList.add("is-open"));
     document.body.classList.add("modal-open");
+
     if (image.complete) image.classList.add("is-loaded");
   }
 
   image.addEventListener("load", () => image.classList.add("is-loaded"));
 
   function close() {
-    lightbox.classList.remove("is-open");
+    modal.classList.remove("is-open");
     document.body.classList.remove("modal-open");
+
+    const finishClose = () => {
+      if (!modal.classList.contains("is-open")) modal.hidden = true;
+    };
+
+    panel.addEventListener("transitionend", finishClose, { once: true });
+    window.setTimeout(finishClose, 450);
   }
 
-  document.querySelectorAll<HTMLElement>("[data-lightbox-trigger]").forEach((item) => {
-    item.addEventListener("click", (e) => {
+  function handleTrigger(el) {
+    const slug = el.dataset.artworkSlug;
+    if (slug) open(slug);
+  }
+
+  document.querySelectorAll("[data-artwork-slug]").forEach((el) => {
+    el.addEventListener("click", (e) => {
       e.preventDefault();
-      open(
-        item.dataset.image || "",
-        item.dataset.alt || "",
-        item.dataset.title || "",
-      );
+      handleTrigger(el);
     });
-    item.addEventListener("keydown", (e) => {
+    el.addEventListener("keydown", (e) => {
       if (e.key === "Enter" || e.key === " ") {
         e.preventDefault();
-        open(
-          item.dataset.image || "",
-          item.dataset.alt || "",
-          item.dataset.title || "",
-        );
+        handleTrigger(el);
       }
     });
   });
 
   closeBtn.addEventListener("click", close);
-  lightbox.addEventListener("click", (e) => {
-    if (e.target === lightbox) close();
-  });
+  backdrop.addEventListener("click", close);
   document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && lightbox.classList.contains("is-open")) close();
+    if (e.key === "Escape" && modal.classList.contains("is-open")) close();
   });
 </script>

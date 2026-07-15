@@ -5,9 +5,23 @@ import SiteFooter from "../../components/SiteFooter.astro";
 import ContactModal from "../../components/ContactModal.astro";
 import Lightbox from "../../components/Lightbox.astro";
 import ArtworkCard from "../../components/ArtworkCard.astro";
-import { getAllArtworks, isSanityConfigured } from "../../lib/sanity";
+import { getAllArtworks, isSanityConfigured, urlForImage, srcSetForImage } from "../../lib/sanity";
 
 const artworks = await getAllArtworks();
+const MODAL_WIDTHS = [640, 960, 1280, 1600, 2000];
+const modalArtworks = artworks.map((artwork) => ({
+  slug: artwork.slug,
+  title: artwork.title,
+  year: artwork.year,
+  medium: artwork.medium,
+  dimensions: artwork.dimensions,
+  description: artwork.description,
+  imageSrc: urlForImage(artwork.image.url, 2000, 85),
+  imageSrcSet: srcSetForImage(artwork.image.url, MODAL_WIDTHS, 85) || undefined,
+  imageAlt: artwork.image.alt,
+  imageWidth: artwork.image.width,
+  imageHeight: artwork.image.height,
+}));
 ---
 
 <BaseLayout title="Gallery | Jamstain" description="Selected works — drawings and studies by Jamstain.">
@@ -32,6 +46,6 @@ const artworks = await getAllArtworks();
   </main>
 
   <SiteFooter />
-  <Lightbox />
+  <Lightbox artworks={modalArtworks} />
   <ContactModal />
 </BaseLayout>

@@ -19,19 +19,14 @@ const SIZES_BY_LAYOUT: Record<Artwork["size"], string> = {
 
 const thumbSrc = urlForImage(artwork.image.url, 960);
 const thumbSrcSet = srcSetForImage(artwork.image.url, THUMB_WIDTHS) || undefined;
-// A larger, still-optimized (not raw-original) version for the lightbox.
-const fullSrc = urlForImage(artwork.image.url, 2000, 85);
 ---
 
 <div class:list={["oeuvre-item", `oeuvre-item--${artwork.size}`]}>
   <button
     type="button"
     class="oeuvre-frame"
-    data-lightbox-trigger
-    data-image={fullSrc}
-    data-alt={artwork.image.alt}
-    data-title={artwork.title}
-    aria-label={`View ${artwork.title} larger`}
+    data-artwork-slug={artwork.slug}
+    aria-label={`View ${artwork.title}`}
   >
     <img
       src={thumbSrc}
@@ -45,6 +40,8 @@ const fullSrc = urlForImage(artwork.image.url, 2000, 85);
     />
   </button>
   <div class="oeuvre-caption">
-    <a href={`/gallery/${artwork.slug}/`} class="oeuvre-caption__title">{artwork.title}</a>
+    <button type="button" class="oeuvre-caption__title" data-artwork-slug={artwork.slug}>
+      {artwork.title}
+    </button>
   </div>
 </div>
