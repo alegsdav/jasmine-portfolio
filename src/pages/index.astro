@@ -16,6 +16,8 @@ import ContactModal from "../components/ContactModal.astro";
         width="736"
         height="812"
         alt="Graphite study of a cat, left"
+        aria-label="View gallery"
+        role="link"
         fetchpriority="high"
         decoding="async"
         tabindex="0"
@@ -45,6 +47,8 @@ import ContactModal from "../components/ContactModal.astro";
         width="876"
         height="580"
         alt="Graphite study of a cat, right"
+        aria-label="My store"
+        role="link"
         fetchpriority="high"
         decoding="async"
         tabindex="0"
@@ -102,7 +106,7 @@ import ContactModal from "../components/ContactModal.astro";
     ]);
   }
 
-  function initCatScribbles() {
+  function initHeroNav() {
     const hero = document.querySelector<HTMLElement>(".hero");
     const catL = document.querySelector<HTMLElement>(".hero__cat--left");
     const catR = document.querySelector<HTMLElement>(".hero__cat--right");
@@ -111,9 +115,13 @@ import ContactModal from "../components/ContactModal.astro";
 
     if (!hero || !catL || !catR || !scribL || !scribR) return;
 
+    const isCompact = () => window.matchMedia("(max-width: 720px)").matches;
+    let scribblesDrawn = false;
+
     function positionScribble(cat: HTMLElement, scrib: HTMLElement, side: "left" | "right") {
       const cr = cat.getBoundingClientRect();
       const hr = hero!.getBoundingClientRect();
+
       if (side === "left") {
         scrib.style.left = `${cr.right - hr.left - 22}px`;
         scrib.style.right = "";
@@ -134,28 +142,35 @@ import ContactModal from "../components/ContactModal.astro";
       scrib.classList.add("is-active");
     }
 
-    function positionAll() {
+    function layoutDesktop() {
       positionScribble(catL!, scribL!, "left");
       positionScribble(catR!, scribR!, "right");
+      if (!scribblesDrawn) {
+        renderScribble(scribL!);
+        renderScribble(scribR!);
+        scribblesDrawn = true;
+      }
     }
 
-    positionAll();
-    renderScribble(scribL);
-    renderScribble(scribR);
+    function layout() {
+      if (!isCompact()) layoutDesktop();
+    }
 
-    window.addEventListener("resize", positionAll);
+    layout();
+    window.addEventListener("resize", layout);
 
     [catL, catR].forEach((img) => {
       if (!(img as HTMLImageElement).complete) {
-        img.addEventListener("load", positionAll);
+        img.addEventListener("load", layout);
       }
     });
 
-    function wireHotspot(cat: HTMLElement, scrib: HTMLElement, href: string) {
+    function wireCat(cat: HTMLElement, scrib: HTMLElement, href: string) {
+      const canHover = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+
       function updateHotState() {
         const hot =
-          cat.matches(":hover") ||
-          scrib.matches(":hover") ||
+          (canHover && (cat.matches(":hover") || scrib.matches(":hover"))) ||
           document.activeElement === cat ||
           document.activeElement === scrib;
         cat.classList.toggle("is-hot", hot);
@@ -166,24 +181,36 @@ import ContactModal from "../components/ContactModal.astro";
         window.location.href = href;
       }
 
-      [cat, scrib].forEach((el) => {
-        el.addEventListener("mouseenter", updateHotState);
-        el.addEventListener("mouseleave", updateHotState);
-        el.addEventListener("focus", updateHotState);
-        el.addEventListener("blur", updateHotState);
-        el.addEventListener("click", navigate);
-        el.addEventListener("keydown", (e) => {
-          if (e.key === "Enter" || e.key === " ") {
-            e.preventDefault();
-            navigate();
-          }
-        });
+      cat.addEventListener("click", navigate);
+      cat.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          navigate();
+        }
+      });
+      cat.addEventListener("focus", updateHotState);
+      cat.addEventListener("blur", updateHotState);
+
+      if (canHover) {
+        cat.addEventListener("mouseenter", updateHotState);
+        cat.addEventListener("mouseleave", updateHotState);
+        scrib.addEventListener("mouseenter", updateHotState);
+        scrib.addEventListener("mouseleave", updateHotState);
+      }
+      scrib.addEventListener("focus", updateHotState);
+      scrib.addEventListener("blur", updateHotState);
+      scrib.addEventListener("click", navigate);
+      scrib.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          navigate();
+        }
       });
     }
 
-    wireHotspot(catL, scribL, "/gallery/");
-    wireHotspot(catR, scribR, "/store/");
+    wireCat(catL, scribL, "/gallery/");
+    wireCat(catR, scribR, "/store/");
   }
 
-  initCatScribbles();
+  initHeroNav();
 </script>

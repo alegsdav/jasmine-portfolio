@@ -145,6 +145,43 @@ import { socials } from "../lib/socials";
 
     .about__image {
       max-width: 360px;
+      margin-inline: auto;
+    }
+
+    .about__content {
+      text-align: left;
+    }
+
+    .about__body {
+      max-width: none;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .about {
+      gap: 1.75rem;
+      padding: 2rem 1.15rem 4rem;
+    }
+
+    .about__title {
+      font-size: clamp(2.75rem, 16vw, 3.75rem);
+      margin-bottom: 0.75rem;
+    }
+
+    .about__body p {
+      margin-bottom: 1rem;
+    }
+
+    .about__socials {
+      gap: 0.5rem;
+      margin-top: 1.75rem;
+    }
+
+    .about__socials a {
+      width: 44px;
+      height: 44px;
+      align-items: center;
+      justify-content: center;
     }
   }
 </style>

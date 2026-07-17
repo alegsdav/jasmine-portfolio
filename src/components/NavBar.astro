@@ -8,10 +8,19 @@ import NavLinks from "./NavLinks.astro";
 
 <style>
   .nav-bar {
-    position: static;
+    position: relative;
+    z-index: 160;
     display: flex;
     align-items: center;
     justify-content: center;
     height: var(--nav-height);
+    padding: 0 1.25rem;
+  }
+
+  @media (max-width: 768px) {
+    .nav-bar {
+      justify-content: flex-end;
+      padding-inline: max(1rem, env(safe-area-inset-right));
+    }
   }
 </style>
